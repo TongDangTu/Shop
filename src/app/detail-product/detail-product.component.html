@@ -1,0 +1,128 @@
+<app-header></app-header>
+
+<div class="container">
+    <div class="intro-section">
+        <h1>Chi tiết sản phẩm</h1>
+        <p>Sử dụng Boostrap</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <!-- "carousel" là class cơ bản, xác định 1 thành phần là carousel  -->
+            <!-- "slide" sử dụng để định dạng các phần tử con của carousel như các slide riêng lẻ -->
+            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                <!-- "carousel-inner" đánh dấu phần container chứa tất cả các item trong carousel -->
+                <div class="carousel-inner">
+                    <!-- "carousel-item" chính là 1 slide con, đi kèm "active" là đang hiển thị -->
+                    <div class="carousel-item active">
+                        <!-- "square-image" là ảnh hình vuông -->
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/1647978/pexels-photo-1647978.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="product-image"
+                                alt="Product Image">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/11120516/pexels-photo-11120516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="product-image"
+                                alt="Product Image">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/10797395/pexels-photo-10797395.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="product-image"
+                                alt="Product Image">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/12504497/pexels-photo-12504497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="product-image"
+                                alt="Product Image">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/8981857/pexels-photo-8981857.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="product-image"
+                                alt="Product Image">
+                        </div>
+                    </div>
+                </div>
+                <!-- data-bs-targe="carouselABC" là đang chỉ tới thành phần có id="carouselABC" -->
+                <button class="carousel-control-prev" type="button" data-bs-targe="carouselExample"
+                    data-bs-slide="prev">
+                    <!-- chỉ là icon -->
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-targe="carouselExample"
+                    data-bs-slide="next">
+                    <!-- chỉ là icon -->
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="thumbnail-container">
+                    <div class="thumbnail-item active">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/1647978/pexels-photo-1647978.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="thumbnail-image"
+                                alt="Thumbnail Image">
+                        </div>
+                    </div>
+                    <div class="thumbnail-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/11120516/pexels-photo-11120516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="thumbnail-image"
+                                alt="Thumbnail Image">
+                        </div>
+                    </div>
+                    <div class="thumbnail-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/10797395/pexels-photo-10797395.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="thumbnail-image"
+                                alt="Thumbnail Image">
+                        </div>
+                    </div>
+                    <div class="thumbnail-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/12504497/pexels-photo-12504497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="thumbnail-image"
+                                alt="Thumbnail Image">
+                        </div>
+                    </div>
+                    <div class="thumbnail-item">
+                        <div class="square-image">
+                            <img src="https://images.pexels.com/photos/8981857/pexels-photo-8981857.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                class="thumbnail-image"
+                                alt="Thumbnail Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="product-details">
+                <h2>Thông tin chi tiết sản phẩm</h2>
+                <p>Mô tả sản phẩm</p>
+                <p>Giá: 99$</p>
+                <div class="product-actions">
+                    <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+                    <button class="btn btn-success">Mua ngay</button>
+                </div>
+                <div class="product-quantity">
+                    <div class="border-wrapper">
+                        <button>-</button>
+                        <input type="text" value="1" name="" id="">
+                        <button>+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

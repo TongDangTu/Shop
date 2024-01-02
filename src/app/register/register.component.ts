@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { RegisterDTO } from '../dtos/register.dto';
+import { RegisterDTO } from '../dtos/user/register.dto';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +13,7 @@ export class RegisterComponent {
   @ViewChild('registerForm') registerForm!: NgForm;
 
   // Khai báo các biến tương ứng với các trường dữ liệu trong form
-  phone: string;
+  phoneNumber: string;
   password: string;
   retypePassword: string;
   fullName: string;
@@ -22,25 +22,18 @@ export class RegisterComponent {
   dateOfBirth: Date;
 
   constructor (private router: Router, private userService: UserService) {
-    // this.phone = "";
-    // this.password = "";
-    // this.retypePassword = "";
-    // this.fullName = "";
-    // this.address = "";
-    // this.isAccepted = false;
-    // this.dateOfBirth = new Date();
-    this.phone = "33445566";
-    this.password = "123456";
-    this.retypePassword = "123456";
-    this.fullName = "nguyen van test";
+    this.phoneNumber = "";
+    this.password = "";
+    this.retypePassword = "";
+    this.fullName = "";
     this.address = "";
-    this.isAccepted = true;
+    this.isAccepted = false;
     this.dateOfBirth = new Date();
     this.dateOfBirth.setFullYear(this.dateOfBirth.getFullYear()-18);
   }
 
-  onPhoneChange () {
-    console.log(`Phone number: ${this.phone}`);
+  onPhoneNumberChange () {
+    console.log(`Phone number: ${this.phoneNumber}`);
   }
 
   onPasswordChange () {
@@ -48,26 +41,19 @@ export class RegisterComponent {
   }
 
   register () {
-    // const message = `Phone number: ${this.phone}\n`
-    //               + `Password: ${this.password}\n`
-    //               + `Retype Password: ${this.retypePassword}\n`
-    //               + `FullName: ${this.fullName}\n`
-    //               + `Address: ${this.address}\n`
-    //               + `Date Of Birth: ${this.dateOfBirth}`;
-    // alert(`You pressed register. ${message}`);
-    const registerDTO:RegisterDTO = new RegisterDTO (
-      this.fullName,
-      this.phonefullName,
-      this.addressfullName,
-      this.passwordfullName,
-      this.retypePasswordfullName,
-      this.dateOfBirthfullName,
-      0,
-      0,
-      1
-    )
+    const registerDTO:RegisterDTO = new RegisterDTO ({
+      "fullname" : this.fullName,
+      "phone_number" : this.phoneNumber,
+      "address" : this.address,
+      "password" : this.password,
+      "retype_password" : this.retypePassword,
+      "date_of_birth" : this.dateOfBirth,
+      "facebook_account_id" : 0,
+      "google_account_id" : 0,
+      "role_id" : 1
+    });
   
-    this.userService.register(registerData).subscribe({
+    this.userService.register(registerDTO).subscribe({
       next: (response: any) => {
         debugger;
         // Xử lý kết quả trả về khi đăng ký thành công

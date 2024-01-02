@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
@@ -10,10 +12,6 @@ import { OrderConfirmComponent } from './order-confirm/order-confirm.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DetailProductComponent } from './detail-product/detail-product.component';
-import { FormsModule } from '@angular/forms';
-
-import { HttpClientModule } from '@angular/common/http';
-
 
 @NgModule({
   declarations: [
@@ -38,8 +36,8 @@ import { HttpClientModule } from '@angular/common/http';
     // DetailProductComponent
     // OrderComponent,
     // OrderConfirmComponent,
-    // LoginComponent,
-    RegisterComponent,
+    LoginComponent,
+    // RegisterComponent,
   ]
 })
 export class AppModule { }

@@ -9,15 +9,15 @@
                 <div class="login-form mx-auto">
                     <h2 class="login-header">Đăng ký</h2>
                     <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="text" required name="phone"
-                            id="phone" class="form-control"
-                            [(ngModel)]="phone"
-                            (input)="onPhoneChange();"
+                        <label for="phoneNumber">Phone</label>
+                        <input type="text" required name="phoneNumber"
+                            id="phoneNumber" class="form-control"
+                            [(ngModel)]="phoneNumber"
+                            (input)="onPhoneNumberChange();"
                             (focus)="registerForm.form.markAsTouched();">
                         <div class="divider-nospace"></div>
                         <p class="text-danger"
-                            *ngIf="phone.length < 6 && registerForm.form.touched">
+                            *ngIf="phoneNumber.length < 6 && registerForm.form.touched">
                             Phone number phải có ít nhất 6 ký tự
                         </p>
                     </div>

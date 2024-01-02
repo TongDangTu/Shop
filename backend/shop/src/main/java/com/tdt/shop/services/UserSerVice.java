@@ -31,12 +31,12 @@ public class UserSerVice implements IUserService {
     // Kiểm tra xem số điện thoại đã tồn tại hay chưa
     String phoneNumber = userDTO.getPhoneNumber();
     if (userRepository.existsByPhoneNumber(phoneNumber)) {
-      throw new DataIntegrityViolationException("Phone number already exists");
+      throw new DataIntegrityViolationException("Số điện thoại hoặc mật khẩu chưa chính xác");
     }
     Role role = roleRepository.findById(userDTO.getRoleId())
-      .orElseThrow(() -> new DataNotFoundException("Role not found"));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy quyền"));
     if (role.getName().toUpperCase().equals(Role.ADMIN)) {
-      throw new PermissionDenyException("You cannot register an admin account");
+      throw new PermissionDenyException("Không thể đăng ký tài khoản với quyền Admin");
     }
 
     // Convert UserDTO sang User
@@ -63,11 +63,11 @@ public class UserSerVice implements IUserService {
   @Override
   public String login(String phoneNumber, String password) throws Exception {
     User existingUser = userRepository.findByPhoneNumber(phoneNumber)
-      .orElseThrow(() -> new DataNotFoundException("Invalid phone number or password"));
+      .orElseThrow(() -> new DataNotFoundException("Số điện thoại hoặc mật khẩu chưa chính xác"));
     // Check password
     if (existingUser.getFacebookAccountId() == 0 && existingUser.getGoogleAccountId() == 0) {
       if (!passwordEncoder.matches(password, existingUser.getPassword())) {
-        throw new BadCredentialsException("Wrong phone number or password");
+        throw new BadCredentialsException("Số điện thoại hoặc mật khẩu chưa chính xác");
       }
     }
 

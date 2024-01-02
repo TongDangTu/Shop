@@ -10,15 +10,11 @@ import com.tdt.shop.repositories.UserRepository;
 import com.tdt.shop.responses.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +27,7 @@ public class OrderService implements IOrderService {
   public OrderResponse createOrder(OrderDTO orderDTO) throws DataNotFoundException {
     // kiểm tra xem user_id có tồn tại hay không
     User user= userRepository.findById(orderDTO.getUserId())
-      .orElseThrow(() -> new DateTimeException("Cannot find user with id: "+ orderDTO.getUserId()));
+      .orElseThrow(() -> new DateTimeException("Không tồn tại người dùng có id: "+ orderDTO.getUserId()));
 
     // Tạo một luồng bằng ánh xạ riêng để kiểm soát việc ánh xạ
     modelMapper.typeMap(OrderDTO.class, Order.class)    // convert từ OrderDTO sang Order
@@ -51,7 +47,7 @@ public class OrderService implements IOrderService {
       shippingDate = orderDTO.getShippingDate();
     }
     if (shippingDate.isBefore(LocalDate.now())) {
-      throw new DataNotFoundException("Data must be at least today");
+      throw new DataNotFoundException("Ngày giao hàng không được giao trước hôm nay");
     }
 
     order.setShippingDate(shippingDate);
@@ -66,15 +62,15 @@ public class OrderService implements IOrderService {
   @Override
   public Order getOrder (Long id) throws DataNotFoundException {
     return orderRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Cannot find Order with id: "+ id));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ id));
   }
 
   @Override
   public Order updateOrder(Long id, OrderDTO orderDTO) throws DataNotFoundException {
     Order existingOrder = orderRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: "+ id));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ id));
     User existingUser = userRepository.findById(orderDTO.getUserId())
-      .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: "+ orderDTO.getUserId()));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Người dùng có id: "+ orderDTO.getUserId()));
     modelMapper.typeMap(OrderDTO.class, Order.class)
       .addMappings(mapper -> mapper.skip(Order::setId));
     modelMapper.map(orderDTO, existingOrder);
@@ -85,7 +81,7 @@ public class OrderService implements IOrderService {
   @Override
   public void deleteOrder(Long id) throws DataNotFoundException {
     Order order = orderRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: "+ id));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ id));
     order.setActive(false);
     orderRepository.save(order);
   }

@@ -3,6 +3,7 @@ package com.tdt.shop.controllers;
 import com.tdt.shop.dtos.OrderDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
 import com.tdt.shop.models.Order;
+import com.tdt.shop.responses.MessageResponse;
 import com.tdt.shop.responses.OrderResponse;
 import com.tdt.shop.services.IOrderService;
 import jakarta.validation.Valid;
@@ -26,17 +27,17 @@ public class OrderController {
     ) {
     try {
       if (result.hasErrors()) {
-        List<String> errorMessage = result.getFieldErrors()
+        List<String> errorMessages = result.getFieldErrors()
           .stream()
           .map(FieldError::getDefaultMessage)
           .toList();
-        return ResponseEntity.badRequest().body(errorMessage);
+        return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
       }
       OrderResponse orderResponse = orderService.createOrder(orderDTO);
       return ResponseEntity.ok(orderResponse);
     }
     catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -49,7 +50,7 @@ public class OrderController {
       return ResponseEntity.ok(orders);
     }
     catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -62,7 +63,7 @@ public class OrderController {
       return ResponseEntity.ok(existingOrder);
     }
     catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -76,7 +77,7 @@ public class OrderController {
         Order order = orderService.updateOrder(id, orderDTO );
         return ResponseEntity.ok(order);
       } catch (DataNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
       }
   }
 
@@ -86,9 +87,9 @@ public class OrderController {
   ) {
       try {
         orderService.deleteOrder(id);
-        return ResponseEntity.ok("Order deleted successfully.");
+        return ResponseEntity.ok("Xóa Order thành công");
       } catch (DataNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
       }
   }
 }

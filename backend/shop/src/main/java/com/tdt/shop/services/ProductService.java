@@ -27,7 +27,7 @@ public class ProductService implements IProductService {
   @Override
   public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
     Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
-      .orElseThrow(() -> new DataNotFoundException("Cannot find category with id: "+ productDTO.getCategoryId()));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Loại mặt hàng có id: "+ productDTO.getCategoryId()));
     Product newProduct = Product.builder()
       .name(productDTO.getName())
       .price(productDTO.getPrice())
@@ -41,7 +41,7 @@ public class ProductService implements IProductService {
   @Override
   public Product getProductById(long productId) throws DataNotFoundException {
     return productRepository.findById(productId)
-            .orElseThrow(() -> new DataNotFoundException("Cannot find product"));
+            .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm"));
   }
 
   @Override
@@ -56,7 +56,7 @@ public class ProductService implements IProductService {
       // copy các thuộc tính từ DTO -> Product
       // Có thể sử dụng ModelMapper
       Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
-        .orElseThrow(() -> new DataNotFoundException("Cannot find category with id: "+ productDTO.getCategoryId()));
+        .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Loại mặt hàng có id: "+ productDTO.getCategoryId()));
       existingProduct.setName(productDTO.getName());
       existingProduct.setCategory(existingCategory);
       existingProduct.setPrice(productDTO.getPrice());
@@ -84,7 +84,7 @@ public class ProductService implements IProductService {
   @Override
   public ProductImage createProductImage (Long productId, ProductImageDTO productImageDTO) throws DataNotFoundException, InvalidParamException {
     Product existingProduct = productRepository.findById(productId)
-      .orElseThrow(() -> new DataNotFoundException("Cannot find product with id: "+ productImageDTO.getProductId()));
+      .orElseThrow(() -> new DataNotFoundException("Không tim thấy sản phẩm có id: "+ productImageDTO.getProductId()));
     ProductImage newProductImage = ProductImage.builder()
       .product(existingProduct)
       .imageUrl(productImageDTO.getImageUrl())
@@ -92,7 +92,7 @@ public class ProductService implements IProductService {
     // Không cho insert quá 5 ảnh cho 1 sản phẩm
     int size = productImageRepository.findByProductId(productId).size();
     if (size >= ProductImage.MAXIMUM_IMAGES) {
-      throw new InvalidParamException("The product can only have a maximum "+ ProductImage.MAXIMUM_IMAGES +" images");
+      throw new InvalidParamException("Sản phẩm chỉ được phép có tối đa "+ ProductImage.MAXIMUM_IMAGES +" ảnh");
     }
     return productImageRepository.save(newProductImage);
   }

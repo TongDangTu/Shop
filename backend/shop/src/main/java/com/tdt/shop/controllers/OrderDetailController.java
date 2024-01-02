@@ -2,6 +2,7 @@ package com.tdt.shop.controllers;
 
 import com.tdt.shop.exceptions.DataNotFoundException;
 import com.tdt.shop.models.OrderDetail;
+import com.tdt.shop.responses.MessageResponse;
 import com.tdt.shop.responses.OrderDetailResponse;
 import com.tdt.shop.services.OrderDetailService;
 import com.tdt.shop.dtos.OrderDetailDTO;
@@ -25,7 +26,7 @@ public class OrderDetailController {
       OrderDetail newOrderDetail = orderDetailService.createOrderDetail(orderDetailDTO);
       return ResponseEntity.ok(OrderDetailResponse.fromOrderDetail(newOrderDetail));
     } catch (DataNotFoundException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -37,7 +38,7 @@ public class OrderDetailController {
       OrderDetail orderDetail = orderDetailService.getOrderDetail(id);
       return ResponseEntity.ok(OrderDetailResponse.fromOrderDetail(orderDetail));
     } catch (DataNotFoundException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -53,7 +54,7 @@ public class OrderDetailController {
         .toList();
       return ResponseEntity.ok(orderDetailResponses);
     } catch (DataNotFoundException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -67,7 +68,7 @@ public class OrderDetailController {
       OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrderDetail(orderDetail);
       return ResponseEntity.ok(orderDetailResponse);
     } catch (DataNotFoundException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -77,10 +78,10 @@ public class OrderDetailController {
   ) {
     try {
       orderDetailService.deleteOrderDetail(id);
-      return ResponseEntity.ok("Deleted order detail with id:"+ id);
+      return ResponseEntity.ok("Xóa Chi tiết đơn hàng thành công");
     }
     catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 }

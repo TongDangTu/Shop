@@ -24,7 +24,7 @@ public class CategoryService implements ICategoryService {
   @Override
   public Category getCategoryById(long id) {
     return categoryRepository.findById(id)
-      .orElseThrow(() -> new RuntimeException("Category not found"));
+      .orElseThrow(() -> new RuntimeException("Category không tồn tại"));
   }
 
   @Override

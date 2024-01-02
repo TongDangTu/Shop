@@ -6,6 +6,7 @@ import com.tdt.shop.dtos.ProductImageDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
 import com.tdt.shop.models.Product;
 import com.tdt.shop.models.ProductImage;
+import com.tdt.shop.responses.MessageResponse;
 import com.tdt.shop.responses.ProductListResponse;
 import com.tdt.shop.responses.ProductResponse;
 import com.tdt.shop.services.IProductService;
@@ -44,7 +45,7 @@ public class ProductController {
     @RequestParam("page") int page,
     @RequestParam("limit") int limit
   ) {
-    // Tạo Pageable ừ thông tin page và limit
+    // Tạo Pageable
     PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createdAt").descending());
     Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
 
@@ -64,7 +65,7 @@ public class ProductController {
         Product existingProduct = productService.getProductById(productId);
         return ResponseEntity.ok(ProductResponse.fromProduct(existingProduct));
       } catch (DataNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
       }
   }
 
@@ -78,18 +79,18 @@ public class ProductController {
   ) {
     try {
       if (result.hasErrors()) {
-        List<String> errorMessage = result.getFieldErrors()
+        List<String> errorMessages = result.getFieldErrors()
           .stream()
           .map(FieldError::getDefaultMessage)
           .toList();
-        return ResponseEntity.badRequest().body(errorMessage);
+        return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
       }
 
       Product newProduct = productService.createProduct(productDTO);
       return ResponseEntity.ok(newProduct);
     }
     catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -106,7 +107,7 @@ public class ProductController {
       }
       // Kiểm tra số lượng file đầu vào
       if (files.size() > ProductImage.MAXIMUM_IMAGES) {
-        return ResponseEntity.badRequest().body("You can only upload maximum "+ ProductImage.MAXIMUM_IMAGES +" images");
+        return ResponseEntity.badRequest().body(new MessageResponse("You can only upload maximum "+ ProductImage.MAXIMUM_IMAGES +" images"));
       }
       List<ProductImage> productImages = new ArrayList<>();
       for (MultipartFile file : files) {
@@ -118,7 +119,7 @@ public class ProductController {
           }
           long sizeOfFile = file.getSize();
           if (file.getSize() > 10 * 1024 * 1024) {   // Kích thước > 10MB
-            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File is to large, Maximum 10MB");
+            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(new MessageResponse("File quá lớn, tối đa 10MB"));
           }
           // Kiểm tra định dạng file: ảnh hay văn bản hay PDF, vân vân, ... Chỗ này chưa kiểm tra chính xác từng đuôi mở rộng. Nếu muốn, ta có thể dùng thêm .endsWith(".png")
           // Ví dụ
@@ -128,7 +129,7 @@ public class ProductController {
           // File không xác định hoặc loại nội dung không được hỗ trợ: | Đầu vào: "unknown.xyz" | Đầu ra: null hoặc "application/octet-stream" (định dạng mặc định cho loại nội dung không xác định)
           String contentType = file.getContentType();
           if (contentType == null || !contentType.startsWith("image/")) {
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("File must be an image");
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("File phải là ảnh");
           }
           // Lưu file và cập nhật thumbnail trong DTO
           String filename = storeFile(file);
@@ -143,13 +144,13 @@ public class ProductController {
       return ResponseEntity.ok().body(productImages);
     }
     catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
   private String storeFile (MultipartFile file) throws IOException {
-    if (!isImageFile(file) || file.getOriginalFilename() == null) {   // Thừa vì đã kiểm tra ở trên
-      throw new IOException("Invalid image format");
+    if (!isImageFile(file) || file.getOriginalFilename() == null) {
+      throw new IOException("File phải là ảnh");
     }
     else {
       String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -228,19 +229,18 @@ public class ProductController {
         Product product = productService.updateProduct(id, productDTO);
         return ResponseEntity.ok(ProductResponse.fromProduct(product));
       } catch (DataNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
       }
 
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteProduct (@PathVariable("id") long productId) {
-    // .status(HttpStatus.OK).body() giống .ok()
     try {
       productService.deleteProduct(productId);
-      return ResponseEntity.ok("Deleted product with id = "+ productId);
+      return ResponseEntity.ok("Xóa sản phẩm thành công, id: "+ productId);
     } catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 

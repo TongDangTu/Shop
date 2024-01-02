@@ -4,6 +4,8 @@ import com.tdt.shop.dtos.UserDTO;
 import com.tdt.shop.dtos.UserLoginDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
 import com.tdt.shop.models.User;
+import com.tdt.shop.responses.LoginResponse;
+import com.tdt.shop.responses.MessageResponse;
 import com.tdt.shop.services.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +33,16 @@ public class UserController {
           .stream()              // .stream() của java 8. Ở đây thì lấy 1 trường nào đó trong danh sách và ánh xạ sang mảng khác
           .map(FieldError::getDefaultMessage)        // ánh xạ
           .toList();
-        return ResponseEntity.badRequest().body(errorMessages);
+        return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
       }
       if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
-        return ResponseEntity.badRequest().body("Password does not match");
+        return ResponseEntity.badRequest().body(new MessageResponse("Mật khẩu chưa khớp"));
       }
       User user = userService.createUser(userDTO);
       return ResponseEntity.ok(user);
     }
     catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(e.getMessage()));
     }
   }
 
@@ -54,15 +56,19 @@ public class UserController {
         .stream()              // .stream() của java 8. Ở đây thì lấy 1 trường nào đó trong danh sách và ánh xạ sang mảng khác
         .map(FieldError::getDefaultMessage)        // ánh xạ
         .toList();
-      return ResponseEntity.badRequest().body(errorMessages);
+      return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
     }
     // Kiểm tra thông tin đăng nhập và sinh Token
     try {
       String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
+      LoginResponse loginResponse = LoginResponse.builder()
+        .message("Đăng nhập thành công")
+        .token(token)
+        .build();
     // Trả về token trong response
-      return ResponseEntity.ok(token);
+      return ResponseEntity.ok(loginResponse);
     } catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 }

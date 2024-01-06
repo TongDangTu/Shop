@@ -10,17 +10,16 @@
                 <div class="login-form mx-auto">
                     <h2 class="login-header">Đăng nhập</h2>
                     <div class="form-group">
-                        <label for="phoneNumber">Phone</label>
-                        <input type="text" name="phoneNumber"
-                            class="form-control" id="phoneNumber"
+                        <label for="phone-number">Số điện thoại</label>
+                        <input type="text" name="phone-number" maxlength="10"
+                            class="form-control" id="phone-number"
                             [(ngModel)]="phoneNumber"
                             (input)="onPhoneNumberChange()"
-                            (focus)="loginForm.form.markAsTouched()"
-                            >
+                            (focus)="loginForm.form.controls['phone-number'].markAsTouched()">
                         <div class="divider-nospace"></div>
                         <p class="text-danger"
-                            *ngIf="phoneNumber.length < 6 && loginForm.form.touched">
-                            Phone number phải có ít nhất 6 ký tự
+                            *ngIf="phoneNumber.length < 9 && loginForm.form.controls['phone-number'].touched">
+                            Số điện thoại phải có ít nhất 9 ký tự
                         </p>
                     </div>
                     <div class="mt-5"></div>
@@ -30,13 +29,13 @@
                             <input type="password" placeholder="Ít nhất 3 ký tự" name="password"
                                 class="form-control" id="password"
                                 [(ngModel)]="password"
-                                (focus)="loginForm.form.markAsTouched()">
+                                (focus)="loginForm.form.controls['password'].markAsTouched()">
                             <i class="input-group-text password-toggle fa-solid fa-eye bg-transparent border-0"></i>
                         </div>
                         <div class="divider-nospace"></div>
                         <p class="text-danger"
-                            *ngIf="password.length < 3 && loginForm.form.touched">
-                            Mật khẩu phải có ít nhất 3 ký tự
+                            *ngIf="password.length < 6 && loginForm.form.controls['password'].touched">
+                            Mật khẩu phải có ít nhất 6 ký tự
                         </p>
                     </div>
                     <div class="form-group">

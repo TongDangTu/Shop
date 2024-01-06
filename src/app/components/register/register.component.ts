@@ -32,14 +32,6 @@ export class RegisterComponent {
     this.dateOfBirth.setFullYear(this.dateOfBirth.getFullYear()-18);
   }
 
-  onPhoneNumberChange () {
-    console.log(`Phone number: ${this.phoneNumber}`);
-  }
-
-  onPasswordChange () {
-    console.log(`Password: ${this.password}`);
-  }
-
   register () {
     const registerDTO:RegisterDTO = new RegisterDTO ({
       "fullname" : this.fullName,
@@ -57,6 +49,7 @@ export class RegisterComponent {
       next: (response: any) => {
         debugger;
         // Xử lý kết quả trả về khi đăng ký thành công
+        alert("Đăng ký thành công");
         this.router.navigate(['/login']);
       },
       complete: () => {
@@ -64,21 +57,21 @@ export class RegisterComponent {
       },
       error: (error: any) => {
         // Xử lý lỗi nếu có
-        alert(`Cannot register, error: ${error.error}`);
+        alert(`Cannot register, error: ${error.error.message}`);
       } 
     });
   }
 
   // 
   checkPasswordMatch () {
-    const retypePasswordControl = this.registerForm.controls['retypePassword'];
+    const retypePasswordControl = this.registerForm.controls['retype-password'];
 
     if (retypePasswordControl) {
       if (this.password !== this.retypePassword) {
-        this.registerForm.form.controls['retypePassword'].setErrors({ 'passwordMismatch': true });
+        this.registerForm.form.controls['retype-password'].setErrors({ 'passwordMismatch': true });
       }
       else {
-        this.registerForm.form.controls['retypePassword'].setErrors(null);
+        this.registerForm.form.controls['retype-password'].setErrors(null);
       }
     }
   }
@@ -94,10 +87,10 @@ export class RegisterComponent {
       }
 
       if (age < 18) {
-        this.registerForm.form.controls['dateOfBirth'].setErrors({ 'invalidAge': true });
+        this.registerForm.form.controls['date-of-birth'].setErrors({ 'invalidAge': true });
       }
       else {
-        this.registerForm.form.controls['dateOfBirth'].setErrors(null);
+        this.registerForm.form.controls['date-of-birth'].setErrors(null);
       }
     }
   }

@@ -58,9 +58,6 @@ export class LoginComponent {
   }
 
   login () {
-    alert(`${this.phoneNumber}`
-      + `\n${this.password}`)
-      + `\n${this.selectedRole?.id ?? 1}`;
     const loginDTO: LoginDTO = new LoginDTO ({
       "phone_number": this.phoneNumber,
       "password": this.password,

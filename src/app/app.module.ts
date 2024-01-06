@@ -41,8 +41,8 @@ import { DetailProductComponent } from './components/detail-product/detail-produ
     // DetailProductComponent
     // OrderComponent,
     // OrderConfirmComponent,
-    LoginComponent,
-    // RegisterComponent,
+    // LoginComponent,
+    RegisterComponent,
   ]
 })
 export class AppModule { }

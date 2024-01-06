@@ -54,10 +54,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <select name="" id="" class="form-control access-right">
+                        <select name="selectedRole" id="" class="form-control access-right"
+                            [(ngModel)]="selectedRole">
                             <option value="" selected disabled>Quyền đăng nhập</option>
-                            <option value="">Người dùng</option>
-                            <option value="">Quản trị viên</option>
+                            <option *ngFor="let role of roles" [ngValue]="role">{{ role.name }}</option>
                         </select>
                     </div>
                     <button type="button"

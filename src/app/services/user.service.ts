@@ -11,21 +11,19 @@ import { envipronment } from '../environments/environment';
 export class UserService {
   private apiRegister = `${envipronment.apiBaseUrl}/users/register`;
   private apiLogin = `${envipronment.apiBaseUrl}/users/login`;
-  private apiConfig = {
-    headers: this.createHeader()
+  apiHeaders = {
+    headers: new HttpHeaders("Content-Type: application/json")
+  };
+
+  constructor (private httpClient: HttpClient) {
+
   }
 
-  constructor(private http: HttpClient) { }
-
-  private createHeader() : HttpHeaders {
-    return new HttpHeaders({'Content-Type' : 'application/json'});
+  register (registerDTO: RegisterDTO) : Observable<any> {
+    return this.httpClient.post(this.apiRegister, registerDTO,this.apiHeaders);
   }
 
-  register(registerDTO: RegisterDTO) : Observable<any> {
-    return this.http.post(this.apiRegister, registerDTO, this.apiConfig);
-  }
-
-  login (loginDTO: LoginDTO) : Observable<any> {
-    return this.http.post(this.apiLogin, loginDTO, this.apiConfig);
+  login (loginDTO: LoginDTO): Observable<any> {
+    return this.httpClient.post(this.apiLogin, loginDTO, this.apiHeaders);
   }
 }

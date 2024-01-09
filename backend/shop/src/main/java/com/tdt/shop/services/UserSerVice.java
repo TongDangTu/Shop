@@ -1,18 +1,18 @@
 package com.tdt.shop.services;
 
-import com.tdt.shop.components.JwtTokenUtil;
+//import com.tdt.shop.components.JwtTokenUtil;
 import com.tdt.shop.dtos.UserDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
-import com.tdt.shop.exceptions.PermissionDenyException;
+//import com.tdt.shop.exceptions.PermissionDenyException;
 import com.tdt.shop.models.Role;
 import com.tdt.shop.models.User;
 import com.tdt.shop.repositories.RoleRepository;
 import com.tdt.shop.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.dao.DataIntegrityViolationException;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.authentication.BadCredentialsException;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +24,19 @@ public class UserSerVice implements IUserService {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
-  private final JwtTokenUtil jwtTokenUtil;
+//  private final AuthenticationManager authenticationManager;
+//  private final JwtTokenUtil jwtTokenUtil;
   @Override
   public User createUser(UserDTO userDTO) throws Exception {
     // Kiểm tra xem số điện thoại đã tồn tại hay chưa
     String phoneNumber = userDTO.getPhoneNumber();
     if (userRepository.existsByPhoneNumber(phoneNumber)) {
-      throw new DataIntegrityViolationException("Số điện thoại hoặc mật khẩu chưa chính xác");
+      throw new DataNotFoundException("Số điện thoại hoặc mật khẩu chưa chính xác");
     }
     Role role = roleRepository.findById(userDTO.getRoleId())
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy quyền"));
     if (role.getName().toUpperCase().equals(Role.ADMIN)) {
-      throw new PermissionDenyException("Không thể đăng ký tài khoản với quyền Admin");
+      throw new Exception("Không thể đăng ký tài khoản với quyền Admin");
     }
 
     // Convert UserDTO sang User
@@ -67,16 +67,17 @@ public class UserSerVice implements IUserService {
     // Check password
     if (existingUser.getFacebookAccountId() == 0 && existingUser.getGoogleAccountId() == 0) {
       if (!passwordEncoder.matches(password, existingUser.getPassword())) {
-        throw new BadCredentialsException("Số điện thoại hoặc mật khẩu chưa chính xác");
+        throw new DataNotFoundException("Số điện thoại hoặc mật khẩu chưa chính xác");
       }
     }
 
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-      phoneNumber, password, existingUser.getAuthorities()
-    );
-    // authenticate with JavaSpring security
-    authenticationManager.authenticate(authenticationToken);
-
-    return jwtTokenUtil.generateToken(existingUser);
+//    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//      phoneNumber, password, existingUser.getAuthorities()
+//    );
+//    // authenticate with JavaSpring security
+//    authenticationManager.authenticate(authenticationToken);
+//
+//    return jwtTokenUtil.generateToken(existingUser);
+    return phoneNumber;
   }
 }

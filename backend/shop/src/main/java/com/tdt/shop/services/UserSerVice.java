@@ -1,6 +1,6 @@
 package com.tdt.shop.services;
 
-import com.tdt.shop.components.JwtTokenUtil;
+import com.tdt.shop.config.JwtService;
 import com.tdt.shop.dtos.UserDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
 import com.tdt.shop.exceptions.PermissionDenyException;
@@ -24,14 +24,14 @@ public class UserSerVice implements IUserService {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
-  private final JwtTokenUtil jwtTokenUtil;
   @Override
-  public User createUser(UserDTO userDTO) throws Exception {
+  public String createUser(UserDTO userDTO) throws Exception {
     // Kiểm tra xem số điện thoại đã tồn tại hay chưa
     String phoneNumber = userDTO.getPhoneNumber();
     if (userRepository.existsByPhoneNumber(phoneNumber)) {
-      throw new DataIntegrityViolationException("Số điện thoại hoặc mật khẩu chưa chính xác");
+      throw new DataIntegrityViolationException("Số điện thoại này đã được sử dụng");
     }
     Role role = roleRepository.findById(userDTO.getRoleId())
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy quyền"));
@@ -57,7 +57,9 @@ public class UserSerVice implements IUserService {
       String encodePassword = passwordEncoder.encode(password);
       newUser.setPassword(encodePassword);
     }
-    return userRepository.save(newUser);
+    userRepository.save(newUser);
+    String jwtToken = jwtService.generateToken(newUser);
+    return jwtToken;
   }
 
   @Override
@@ -72,11 +74,12 @@ public class UserSerVice implements IUserService {
     }
 
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-      phoneNumber, password, existingUser.getAuthorities()
+      phoneNumber, password
     );
     // authenticate with JavaSpring security
     authenticationManager.authenticate(authenticationToken);
 
-    return jwtTokenUtil.generateToken(existingUser);
+    String jwtToken = jwtService.generateToken(existingUser);
+    return jwtToken;
   }
 }

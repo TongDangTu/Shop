@@ -20,6 +20,36 @@ import java.util.List;
 @RequestMapping("${api.prefix}/orders")
 public class OrderController {
   private final IOrderService orderService;
+
+  @GetMapping("/user/{user_id}")
+  public ResponseEntity<?> getOrders (
+    @Valid @PathVariable("user_id") Long userId
+  ){
+    try {
+      List<Order> orders = orderService.getOrderByUserId(userId);
+      List<OrderResponse> orderResponses = orders.stream()
+        .map(order -> OrderResponse.fromOrder(order))
+        .toList();
+      return ResponseEntity.ok(orderResponses);
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getOrder (
+    @Valid @PathVariable("id") Long orderId
+  ){
+    try {
+      Order order = orderService.getOrder(orderId);
+      return ResponseEntity.ok(OrderResponse.fromOrder(order));
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
   @PostMapping("")
   public ResponseEntity<?> createOrder (
     @RequestBody @Valid OrderDTO orderDTO,
@@ -33,41 +63,14 @@ public class OrderController {
           .toList();
         return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
       }
-      OrderResponse orderResponse = orderService.createOrder(orderDTO);
-      return ResponseEntity.ok(orderResponse);
+      Order order = orderService.createOrder(orderDTO);
+      return ResponseEntity.ok(OrderResponse.fromOrder(order));
     }
     catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 
-  @GetMapping("/user/{user_id}")
-  public ResponseEntity<?> getOrders (
-    @Valid @PathVariable("user_id") Long userId
-  ){
-    try {
-      List<Order> orders = orderService.findByUserId(userId);
-      return ResponseEntity.ok(orders);
-    }
-    catch (Exception e) {
-      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-    }
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<?> getOrder (
-    @Valid @PathVariable("id") Long orderId
-  ){
-    try {
-      Order existingOrder = orderService.getOrder(orderId);
-      return ResponseEntity.ok(existingOrder);
-    }
-    catch (Exception e) {
-      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-    }
-  }
-
-  // Công việc của admin
   @PutMapping("/{id}")
   public ResponseEntity<?> updateOrder (
     @Valid @PathVariable long id,
@@ -75,8 +78,8 @@ public class OrderController {
   ) {
       try {
         Order order = orderService.updateOrder(id, orderDTO );
-        return ResponseEntity.ok(order);
-      } catch (DataNotFoundException e) {
+        return ResponseEntity.ok(OrderResponse.fromOrder(order));
+      } catch (Exception e) {
         return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
       }
   }

@@ -18,13 +18,18 @@ import java.util.List;
 @RequestMapping("${api.prefix}/order_details")
 public class OrderDetailController {
   private final OrderDetailService orderDetailService;
-  @PostMapping("")
-  public ResponseEntity<?> createOrderDetail (
-    @RequestBody @Valid OrderDetailDTO orderDetailDTO
+
+  // Lấy các order details của 1 order
+  @GetMapping("/order/{orderId}")
+  public ResponseEntity<?> getOrderDetails (
+    @Valid @PathVariable("orderId") Long orderId
   ) {
     try {
-      OrderDetail newOrderDetail = orderDetailService.createOrderDetail(orderDetailDTO);
-      return ResponseEntity.ok(OrderDetailResponse.fromOrderDetail(newOrderDetail));
+      List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderId(orderId);
+      List<OrderDetailResponse> orderDetailResponses = orderDetails.stream()
+        .map(orderDetail -> OrderDetailResponse.fromOrderDetail(orderDetail))
+        .toList();
+      return ResponseEntity.ok(orderDetailResponses);
     } catch (DataNotFoundException e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
@@ -42,17 +47,13 @@ public class OrderDetailController {
     }
   }
 
-  // Lấy các order details của 1 order
-  @GetMapping("/order/{orderId}")
-  public ResponseEntity<?> getOrderDetails (
-    @Valid @PathVariable("orderId") Long orderId
+  @PostMapping("")
+  public ResponseEntity<?> createOrderDetail (
+    @RequestBody @Valid OrderDetailDTO orderDetailDTO
   ) {
     try {
-      List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderId);
-      List<OrderDetailResponse> orderDetailResponses = orderDetails.stream()
-        .map(orderDetail -> OrderDetailResponse.fromOrderDetail(orderDetail))
-        .toList();
-      return ResponseEntity.ok(orderDetailResponses);
+      OrderDetail orderDetail = orderDetailService.createOrderDetail(orderDetailDTO);
+      return ResponseEntity.ok(OrderDetailResponse.fromOrderDetail(orderDetail));
     } catch (DataNotFoundException e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
@@ -65,8 +66,7 @@ public class OrderDetailController {
   ) {
     try {
       OrderDetail orderDetail = orderDetailService.updateOrderDetail(id, orderDetailDTO);
-      OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrderDetail(orderDetail);
-      return ResponseEntity.ok(orderDetailResponse);
+      return ResponseEntity.ok(OrderDetailResponse.fromOrderDetail(orderDetail));
     } catch (DataNotFoundException e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
@@ -78,7 +78,7 @@ public class OrderDetailController {
   ) {
     try {
       orderDetailService.deleteOrderDetail(id);
-      return ResponseEntity.ok("Xóa Chi tiết đơn hàng thành công");
+      return ResponseEntity.ok("Xóa chi tiết đơn hàng thành công");
     }
     catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));

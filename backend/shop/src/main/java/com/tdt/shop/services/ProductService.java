@@ -4,6 +4,7 @@ import com.tdt.shop.dtos.ProductDTO;
 import com.tdt.shop.dtos.ProductImageDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
 import com.tdt.shop.exceptions.InvalidParamException;
+import com.tdt.shop.exceptions.UniqueDataExistedException;
 import com.tdt.shop.models.Category;
 import com.tdt.shop.models.Product;
 import com.tdt.shop.models.ProductImage;
@@ -24,10 +25,23 @@ public class ProductService implements IProductService {
   private final ProductRepository productRepository;
   private final CategoryRepository categoryRepository;
   private final ProductImageRepository productImageRepository;
+
   @Override
-  public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
+  public Product getProductById(long productId) throws DataNotFoundException {
+    return productRepository.findById(productId)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm"));
+  }
+
+  @Override
+  public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
+    return productRepository.findAll(pageRequest).map(product -> ProductResponse.fromProduct(product));
+  }
+
+  @Override
+  public Product createProduct(ProductDTO productDTO) throws DataNotFoundException, UniqueDataExistedException {
+    existByName(productDTO.getName());
     Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Loại mặt hàng có id: "+ productDTO.getCategoryId()));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy danh mục có id: "+ productDTO.getCategoryId()));
     Product newProduct = Product.builder()
       .name(productDTO.getName())
       .price(productDTO.getPrice())
@@ -39,46 +53,31 @@ public class ProductService implements IProductService {
   }
 
   @Override
-  public Product getProductById(long productId) throws DataNotFoundException {
-    return productRepository.findById(productId)
-            .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm"));
-  }
-
-  @Override
-  public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
-    return productRepository.findAll(pageRequest).map(product -> ProductResponse.fromProduct(product));
-  }
-
-  @Override
   public Product updateProduct(long id, ProductDTO productDTO) throws DataNotFoundException {
     Product existingProduct = getProductById(id);
-    if (existingProduct != null) {
-      // copy các thuộc tính từ DTO -> Product
-      // Có thể sử dụng ModelMapper
-      Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
-        .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Loại mặt hàng có id: "+ productDTO.getCategoryId()));
-      existingProduct.setName(productDTO.getName());
-      existingProduct.setCategory(existingCategory);
-      existingProduct.setPrice(productDTO.getPrice());
-      existingProduct.setThumbnail(productDTO.getThumbnail());
-      existingProduct.setDescription(productDTO.getDescription());
-      existingProduct.setThumbnail(productDTO.getThumbnail());
-      return productRepository.save(existingProduct);
-    }
-    return null;
+    Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy danh mục có id: "+ productDTO.getCategoryId()));
+    existingProduct.setName(productDTO.getName());
+    existingProduct.setCategory(existingCategory);
+    existingProduct.setPrice(productDTO.getPrice());
+    existingProduct.setThumbnail(productDTO.getThumbnail());
+    existingProduct.setDescription(productDTO.getDescription());
+    existingProduct.setThumbnail(productDTO.getThumbnail());
+    return productRepository.save(existingProduct);
   }
 
   @Override
-  public void deleteProduct(long id) {
-    Optional<Product> optionalProduct = productRepository.findById(id);
-    if (optionalProduct.isPresent()) {
-      productRepository.delete(optionalProduct.get());
-    }
+  public void deleteProduct(long id) throws DataNotFoundException {
+    getProductById(id);
+    productRepository.deleteById(id);
   }
 
   @Override
-  public boolean existByName(String name) {
-    return productRepository.existsByName(name);
+  public boolean existByName(String name) throws UniqueDataExistedException {
+    if (productRepository.existsByName(name)) {
+      throw new UniqueDataExistedException("Tên sản phẩm đã tồn tại");
+    }
+    return true;
   }
 
   @Override

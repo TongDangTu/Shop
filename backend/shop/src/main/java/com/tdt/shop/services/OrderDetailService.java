@@ -19,13 +19,27 @@ public class OrderDetailService implements IOrderDetailService {
   private final OrderDetailRepository orderDetailRepository;
   private final OrderRepository orderRepository;
   private final ProductRepository productRepository;
+
+  @Override
+  public List<OrderDetail> getOrderDetailsByOrderId(Long orderId) throws DataNotFoundException {
+    Order existingOrder = orderRepository.findById(orderId)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ orderId));
+    return orderDetailRepository.findByOrderId(orderId);
+  }
+
+  @Override
+  public OrderDetail getOrderDetail(Long id) throws DataNotFoundException {
+    return orderDetailRepository.findById(id)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy chi tiết đơn hàng có id: "+ id));
+  }
+
   @Override
   public OrderDetail createOrderDetail(OrderDetailDTO orderDetailDTO) throws DataNotFoundException {
     Order order = orderRepository.findById(orderDetailDTO.getOrderId())
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ orderDetailDTO.getOrderId()));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng có id: "+ orderDetailDTO.getOrderId()));
     Product product = productRepository.findById(orderDetailDTO.getProductId())
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Sản phẩm có id: "+ orderDetailDTO.getProductId()));
-    OrderDetail newOrderDetail = OrderDetail.builder()
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm có id: "+ orderDetailDTO.getProductId()));
+    OrderDetail orderDetail = OrderDetail.builder()
       .order(order)
       .product(product)
       .price(orderDetailDTO.getPrice())
@@ -33,13 +47,7 @@ public class OrderDetailService implements IOrderDetailService {
       .color(orderDetailDTO.getColor())
       .totalMoney(orderDetailDTO.getTotalMoney())
       .build();
-    return orderDetailRepository.save(newOrderDetail);
-  }
-
-  @Override
-  public OrderDetail getOrderDetail(Long id) throws DataNotFoundException {
-    return orderDetailRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Chi tiết đơn hàng có id: "+ id));
+    return orderDetailRepository.save(orderDetail);
   }
 
   @Override
@@ -60,14 +68,8 @@ public class OrderDetailService implements IOrderDetailService {
   }
 
   @Override
-  public void deleteOrderDetail(Long id) {
+  public void deleteOrderDetail(Long id) throws DataNotFoundException {
+    getOrderDetail(id);
     orderDetailRepository.deleteById(id);
-  }
-
-  @Override
-  public List<OrderDetail> findByOrderId(Long orderId) throws DataNotFoundException {
-    Order existingOrder = orderRepository.findById(orderId)
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ orderId));
-    return orderDetailRepository.findByOrderId(orderId);
   }
 }

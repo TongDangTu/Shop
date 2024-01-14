@@ -2,6 +2,8 @@ package com.tdt.shop.services;
 
 import com.tdt.shop.dtos.OrderDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
+import com.tdt.shop.exceptions.InvalidParamException;
+import com.tdt.shop.exceptions.PermissionDenyException;
 import com.tdt.shop.models.Order;
 import com.tdt.shop.models.OrderStatus;
 import com.tdt.shop.models.User;
@@ -21,23 +23,30 @@ import java.util.List;
 public class OrderService implements IOrderService {
   private final OrderRepository orderRepository;
   private final UserRepository userRepository;
-  private final ModelMapper modelMapper;
 
   @Override
-  public OrderResponse createOrder(OrderDTO orderDTO) throws DataNotFoundException {
+  public List<Order> getAllOrder() {
+    return orderRepository.findAll();
+  }
+
+  @Override
+  public List<Order> getOrderByUserId(Long userId) throws DataNotFoundException {
+    userRepository.findById(userId)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy user có id: "+ userId));
+    return orderRepository.findByUserId(userId);
+  }
+
+  @Override
+  public Order getOrder (Long id) throws DataNotFoundException {
+    return orderRepository.findById(id)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
+  }
+
+  @Override
+  public Order createOrder(OrderDTO orderDTO) throws InvalidParamException {
     // kiểm tra xem user_id có tồn tại hay không
     User user= userRepository.findById(orderDTO.getUserId())
       .orElseThrow(() -> new DateTimeException("Không tồn tại người dùng có id: "+ orderDTO.getUserId()));
-
-    // Tạo một luồng bằng ánh xạ riêng để kiểm soát việc ánh xạ
-    modelMapper.typeMap(OrderDTO.class, Order.class)    // convert từ OrderDTO sang Order
-      .addMappings(mapper -> mapper.skip(Order::setId));  // bỏ qua id
-    // Câp nhật các trường của đơn hàng từ orderDTO
-    Order order = new Order();
-    modelMapper.map(orderDTO, order);
-    order.setUser(user);
-    order.setOrderDate(LocalDate.now());
-    order.setStatus(OrderStatus.PENDING);
     LocalDate shippingDate;
     // Kiểm tra shipping date phải ≥ ngày hôm nay
     if (orderDTO.getShippingDate() == null) {
@@ -47,47 +56,115 @@ public class OrderService implements IOrderService {
       shippingDate = orderDTO.getShippingDate();
     }
     if (shippingDate.isBefore(LocalDate.now())) {
-      throw new DataNotFoundException("Ngày giao hàng không được giao trước hôm nay");
+      throw new InvalidParamException("Ngày giao hàng không được giao trước hôm nay");
     }
 
-    order.setShippingDate(shippingDate);
-    order.setActive(true);
-    orderRepository.save(order);
-    modelMapper.typeMap(Order.class, OrderResponse.class);
-    OrderResponse orderResponse = new OrderResponse();
-    modelMapper.map(order, orderResponse);
-    return orderResponse;
+    Order order = Order.builder()
+//      .id(orderDTO.getId())
+      .user(user)
+      .fullName(orderDTO.getFullName())
+      .email(orderDTO.getEmail())
+      .phoneNumber(orderDTO.getPhoneNumber())
+      .address(orderDTO.getAddress())
+      .note(orderDTO.getNote())
+      .orderDate(LocalDate.now())
+      .status(OrderStatus.PENDING)
+      .totalMoney(orderDTO.getTotalMoney())
+      .shippingMethod(orderDTO.getShippingMethod())
+      .shippingAddress(orderDTO.getShippingAddress())
+      .shippingDate(shippingDate)
+//      .trackingNumber(orderDTO.getTrackingNumber())
+      .paymentMethod(orderDTO.getPaymentMethod())
+      .active(true)
+      .build();
+
+    return orderRepository.save(order);
   }
 
   @Override
-  public Order getOrder (Long id) throws DataNotFoundException {
-    return orderRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ id));
-  }
-
-  @Override
-  public Order updateOrder(Long id, OrderDTO orderDTO) throws DataNotFoundException {
+  public Order updateOrder(Long id, OrderDTO orderDTO) throws DataNotFoundException, InvalidParamException {
     Order existingOrder = orderRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ id));
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
     User existingUser = userRepository.findById(orderDTO.getUserId())
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Người dùng có id: "+ orderDTO.getUserId()));
-    modelMapper.typeMap(OrderDTO.class, Order.class)
-      .addMappings(mapper -> mapper.skip(Order::setId));
-    modelMapper.map(orderDTO, existingOrder);
-    existingOrder.setUser(existingUser);
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy người dùng có id: "+ orderDTO.getUserId()));
+    LocalDate shippingDate;
+    // Kiểm tra shipping date phải ≥ ngày hôm nay
+    if (orderDTO.getShippingDate() == null) {
+      shippingDate = LocalDate.now();
+    }
+    else {
+      shippingDate = orderDTO.getShippingDate();
+    }
+    if (shippingDate.isBefore(LocalDate.now())) {
+      throw new InvalidParamException("Ngày giao hàng không được giao trước hôm nay");
+    }
+    existingOrder.setFullName(orderDTO.getFullName());
+    existingOrder.setEmail(orderDTO.getEmail());
+    existingOrder.setPhoneNumber(orderDTO.getPhoneNumber());
+    existingOrder.setAddress(orderDTO.getAddress());
+    existingOrder.setNote(orderDTO.getNote());
+    existingOrder.setOrderDate(LocalDate.now());
+//    existingOrder.setStatus(orderDTO.getStatus());
+    existingOrder.setTotalMoney(orderDTO.getTotalMoney());
+    existingOrder.setShippingMethod(orderDTO.getShippingMethod());
+    existingOrder.setShippingAddress(orderDTO.getShippingAddress());
+    existingOrder.setShippingDate(shippingDate);
+//    existingOrder.setTrackingNumber(orderDTO.getTrackingNumber());
+    existingOrder.setPaymentMethod(orderDTO.getPaymentMethod());
+//    existingOrder.setActive(orderDTO.getActive());
+    return orderRepository.save(existingOrder);
+  }
+
+  @Override
+  public Order updateOrderForUser(Long id, OrderDTO orderDTO) throws DataNotFoundException, PermissionDenyException {
+    Order existingOrder = orderRepository.findById(id)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
+    User existingUser = userRepository.findById(orderDTO.getUserId())
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy người dùng có id: "+ orderDTO.getUserId()));
+
+    existingOrder.setFullName(orderDTO.getFullName());
+    existingOrder.setEmail(orderDTO.getEmail());
+    existingOrder.setPhoneNumber(orderDTO.getPhoneNumber());
+    existingOrder.setAddress(orderDTO.getAddress());
+    existingOrder.setNote(orderDTO.getNote());
+    existingOrder.setOrderDate(LocalDate.now());
+    existingOrder.setTotalMoney(orderDTO.getTotalMoney());
+    existingOrder.setShippingMethod(orderDTO.getShippingMethod());
+    existingOrder.setShippingAddress(orderDTO.getShippingAddress());
+//    existingOrder.setTrackingNumber(orderDTO.getTrackingNumber());
+    existingOrder.setPaymentMethod(orderDTO.getPaymentMethod());
+//    existingOrder.setActive(orderDTO.getActive());
+    return orderRepository.save(existingOrder);
+  }
+
+  @Override
+  public Order updateOrderForAdmin(Long id, OrderDTO orderDTO) throws DataNotFoundException, InvalidParamException {
+    Order existingOrder = orderRepository.findById(id)
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
+    User existingUser = userRepository.findById(orderDTO.getUserId())
+      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy người dùng có id: "+ orderDTO.getUserId()));
+    LocalDate shippingDate;
+    // Kiểm tra shipping date phải ≥ ngày hôm nay
+    if (orderDTO.getShippingDate() == null) {
+      shippingDate = LocalDate.now();
+    }
+    else {
+      shippingDate = orderDTO.getShippingDate();
+    }
+    if (shippingDate.isBefore(LocalDate.now())) {
+      throw new InvalidParamException("Ngày giao hàng không được giao trước hôm nay");
+    }
+//    existingOrder.setStatus(orderDTO.getStatus());
+    existingOrder.setShippingDate(shippingDate);
+//    existingOrder.setTrackingNumber(orderDTO.getTrackingNumber());
+//    existingOrder.setActive(orderDTO.getActive());
     return orderRepository.save(existingOrder);
   }
 
   @Override
   public void deleteOrder(Long id) throws DataNotFoundException {
-    Order order = orderRepository.findById(id)
-      .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ id));
+    Order order = getOrder(id);
     order.setActive(false);
     orderRepository.save(order);
-  }
-
-  @Override
-  public List<Order> findByUserId(Long userId) {
-    return orderRepository.findByUserId(userId);
   }
 }

@@ -62,7 +62,6 @@ public class User extends BaseEntity implements UserDetails {
 //    authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
     return authorityList;
   }
-
   // Phương thức này trả về tên đăng nhập của người dùng
   @Override
   public String getUsername() {

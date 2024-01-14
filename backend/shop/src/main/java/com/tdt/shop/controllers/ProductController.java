@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.tdt.shop.dtos.ProductDTO;
 import com.tdt.shop.dtos.ProductImageDTO;
 import com.tdt.shop.exceptions.DataNotFoundException;
+import com.tdt.shop.exceptions.UniqueDataExistedException;
 import com.tdt.shop.models.Product;
 import com.tdt.shop.models.ProductImage;
 import com.tdt.shop.responses.MessageResponse;
@@ -24,7 +25,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -86,8 +86,8 @@ public class ProductController {
         return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
       }
 
-      Product newProduct = productService.createProduct(productDTO);
-      return ResponseEntity.ok(newProduct);
+      Product product = productService.createProduct(productDTO);
+      return ResponseEntity.ok(ProductResponse.fromProduct(product));
     }
     catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
@@ -235,10 +235,10 @@ public class ProductController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteProduct (@PathVariable("id") long productId) {
+  public ResponseEntity<?> deleteProduct (@PathVariable("id") long id) {
     try {
-      productService.deleteProduct(productId);
-      return ResponseEntity.ok("Xóa sản phẩm thành công, id: "+ productId);
+      productService.deleteProduct(id);
+      return ResponseEntity.ok("Xóa thành công");
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
@@ -249,10 +249,14 @@ public class ProductController {
     Faker faker = new Faker();
     for (int i = 0; i < 10000; i++) {
       String productName = faker.commerce().productName();
-      if (productService.existByName(productName)) {
-        continue;
-      }
-      ProductDTO productDTO = ProductDTO.builder()
+        try {
+            if (productService.existByName(productName)) {
+              continue;
+            }
+        } catch (UniqueDataExistedException e) {
+            throw new RuntimeException(e);
+        }
+        ProductDTO productDTO = ProductDTO.builder()
         .name(productName)
         .price((float)faker.number().numberBetween(0, 90_000_001))
         .thumbnail("")
@@ -261,7 +265,7 @@ public class ProductController {
         .build();
         try {
           productService.createProduct(productDTO);
-        } catch (DataNotFoundException e) {
+        } catch (Exception e) {
           return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

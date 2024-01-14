@@ -20,6 +20,31 @@ import java.util.List;
 public class CategoryController {
   private final CategoryService categoryService;
 
+  @GetMapping("")
+  public ResponseEntity<?> getAllCategories (
+    @RequestParam("page") int page,
+    @RequestParam("limit") int limit
+  ) {
+    try {
+      List<Category> categories = categoryService.getAllCategory();
+      return ResponseEntity.ok(categories);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getCategory (
+    @PathVariable int id
+  ) {
+    try {
+      Category category = categoryService.getCategoryById(id);
+      return ResponseEntity.ok(category);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
   @PostMapping("")
   public ResponseEntity<?> createCategory (
     @RequestBody @Valid CategoryDTO categoryDTO,
@@ -32,31 +57,38 @@ public class CategoryController {
         .toList();
       return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
     }
-    categoryService.createCategory(categoryDTO);
-    return ResponseEntity.ok(categoryDTO);
+    try {
+      Category category = categoryService.createCategory(categoryDTO);
+      return ResponseEntity.ok(category);
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
   }
 
-  @GetMapping("")
-  public ResponseEntity<List<Category>> getAllCategories (
-    @RequestParam("page") int page,
-    @RequestParam("limit") int limit
-  ) {
-    List<Category> categories = categoryService.getAllCategory();
-    return ResponseEntity.ok(categories);
-  }
 
   @PutMapping("/{id}")
   public ResponseEntity<?> updateCategory (
     @PathVariable Long id,
     @Valid @RequestBody CategoryDTO categoryDTO
   ) {
-    categoryService.updateCategory(id, categoryDTO);
-    return ResponseEntity.ok(new MessageResponse("Cập nhật Category thành công"));
+    try {
+      Category category = categoryService.updateCategory(id, categoryDTO);
+      return ResponseEntity.ok(category);
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteCategory (@PathVariable Long id) {
-    categoryService.deleteCategory(id);
-    return ResponseEntity.ok(new MessageResponse("Xóa Category thành công"));
+    try {
+      categoryService.deleteCategory(id);
+      return ResponseEntity.ok(new MessageResponse("Xóa thành công"));
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
   }
 }

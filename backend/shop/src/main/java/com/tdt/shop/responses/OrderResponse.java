@@ -1,6 +1,7 @@
 package com.tdt.shop.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tdt.shop.models.Order;
 import com.tdt.shop.models.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderResponse extends BaseResponse {
+public class OrderResponse {
   private Long id;
   @JsonProperty("user_id")
   private Long userId;
@@ -41,4 +42,25 @@ public class OrderResponse extends BaseResponse {
   @JsonProperty("payment_method")
   private String paymentMethod;
   private Boolean active;
+
+  public static OrderResponse fromOrder (Order order) {
+    return OrderResponse.builder()
+    .id(order.getId())
+    .userId(order.getUser().getId())
+    .fullName(order.getFullName())
+    .email(order.getEmail())
+    .phoneNumber(order.getPhoneNumber())
+    .address(order.getAddress())
+    .note(order.getNote())
+    .orderDate(order.getOrderDate())
+    .status(order.getStatus())
+    .totalMoney(order.getTotalMoney())
+    .shippingMethod(order.getShippingMethod())
+    .shippingAddress(order.getShippingAddress())
+    .shippingDate(order.getShippingDate())
+    .trackingNumber(order.getTrackingNumber())
+    .paymentMethod(order.getPaymentMethod())
+    .active(order.getActive())
+    .build();
+  }
 }

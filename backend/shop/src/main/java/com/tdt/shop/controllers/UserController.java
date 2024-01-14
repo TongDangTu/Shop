@@ -2,8 +2,6 @@ package com.tdt.shop.controllers;
 
 import com.tdt.shop.dtos.UserDTO;
 import com.tdt.shop.dtos.UserLoginDTO;
-import com.tdt.shop.exceptions.DataNotFoundException;
-import com.tdt.shop.models.User;
 import com.tdt.shop.responses.LoginResponse;
 import com.tdt.shop.responses.MessageResponse;
 import com.tdt.shop.services.IUserService;
@@ -38,8 +36,12 @@ public class UserController {
       if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
         return ResponseEntity.badRequest().body(new MessageResponse("Mật khẩu chưa khớp"));
       }
-      User user = userService.createUser(userDTO);
-      return ResponseEntity.ok(user);
+      String token = userService.createUser(userDTO);
+      LoginResponse registerResponse = LoginResponse.builder()
+        .message("Đăng ký thành công")
+        .token(token)
+        .build();
+      return ResponseEntity.ok(registerResponse);
     }
     catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(e.getMessage()));

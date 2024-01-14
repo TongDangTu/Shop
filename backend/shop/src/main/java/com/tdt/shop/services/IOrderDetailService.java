@@ -7,9 +7,9 @@ import com.tdt.shop.models.OrderDetail;
 import java.util.List;
 
 public interface IOrderDetailService {
-  OrderDetail createOrderDetail (OrderDetailDTO orderDetailDTO) throws DataNotFoundException;
+  List<OrderDetail> getOrderDetailsByOrderId(Long orderId) throws DataNotFoundException;
   OrderDetail getOrderDetail (Long id) throws DataNotFoundException;
+  OrderDetail createOrderDetail (OrderDetailDTO orderDetailDTO) throws DataNotFoundException;
   OrderDetail updateOrderDetail (Long id, OrderDetailDTO orderDetailDTO) throws DataNotFoundException;
-  void deleteOrderDetail (Long id);
-  List<OrderDetail> findByOrderId (Long orderId) throws DataNotFoundException;
+  void deleteOrderDetail (Long id) throws DataNotFoundException;
 }

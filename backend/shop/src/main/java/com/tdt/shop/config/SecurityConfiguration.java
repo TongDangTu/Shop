@@ -65,6 +65,9 @@ public class SecurityConfiguration {
             .requestMatchers(DELETE, apiPrefix+"/products/*")
             .hasAnyRole(Role.ADMIN)
 
+            .requestMatchers(GET, apiPrefix+"/products/images/*")
+            .permitAll()
+
             // Orders
             .requestMatchers(GET, apiPrefix+"/orders/user/*")
             .hasAnyRole(Role.USER, Role.ADMIN)

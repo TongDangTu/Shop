@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ public class UserSerVice implements IUserService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   @Override
+  @Transactional
   public String createUser(UserDTO userDTO) throws Exception {
     // Kiểm tra xem số điện thoại đã tồn tại hay chưa
     String phoneNumber = userDTO.getPhoneNumber();

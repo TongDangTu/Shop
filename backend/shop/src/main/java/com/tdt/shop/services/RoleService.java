@@ -5,6 +5,7 @@ import com.tdt.shop.models.Role;
 import com.tdt.shop.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,16 +14,19 @@ import java.util.List;
 public class RoleService implements IRoleService {
   private final RoleRepository roleRepository;
   @Override
+  @Transactional
   public Role createRole() {
     return null;
   }
 
   @Override
+  @Transactional
   public Role updateRole(Long id, Role role) {
     return null;
   }
 
   @Override
+  @Transactional
   public void deleteRole(Long id) {
 
   }

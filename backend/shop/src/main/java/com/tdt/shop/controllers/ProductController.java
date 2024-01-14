@@ -13,6 +13,7 @@ import com.tdt.shop.responses.ProductResponse;
 import com.tdt.shop.services.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -46,7 +47,7 @@ public class ProductController {
     @RequestParam("limit") int limit
   ) {
     // Tạo Pageable
-    PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createdAt").descending());
+    PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("id").ascending());
     Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
 
     // Lấy tổng số trang
@@ -107,7 +108,7 @@ public class ProductController {
       }
       // Kiểm tra số lượng file đầu vào
       if (files.size() > ProductImage.MAXIMUM_IMAGES) {
-        return ResponseEntity.badRequest().body(new MessageResponse("You can only upload maximum "+ ProductImage.MAXIMUM_IMAGES +" images"));
+        return ResponseEntity.badRequest().body(new MessageResponse("Bạn chỉ được tải lên tối đa "+ ProductImage.MAXIMUM_IMAGES +" ảnh"));
       }
       List<ProductImage> productImages = new ArrayList<>();
       for (MultipartFile file : files) {
@@ -157,7 +158,7 @@ public class ProductController {
       // Sử dụng thư viện UUID để tạo ra tên file duy nhất
       String uniqueFileName = UUID.randomUUID().toString() + "_" + filename;
       // Đường dẫn thư mục muốn lưu file
-      Path uploadDir = Paths.get("upload");
+      Path uploadDir = Paths.get("uploads");
       // Kiểm tra và tạo thư mục nếu không tồn tại
       if (!Files.exists(uploadDir)) {
         Files.createDirectories(uploadDir);
@@ -240,6 +241,27 @@ public class ProductController {
       productService.deleteProduct(id);
       return ResponseEntity.ok("Xóa thành công");
     } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @GetMapping("/images/{imageName}")
+  public ResponseEntity<?> viewImage (
+    @PathVariable String imageName
+  ) {
+    try {
+      Path path = Paths.get("uploads/"+ imageName);
+      UrlResource resource = new UrlResource(path.toUri());
+      if (resource.exists()) {
+        return ResponseEntity.ok()
+          .contentType(MediaType.IMAGE_JPEG)
+          .body(resource);
+      }
+      else {
+        return ResponseEntity.badRequest().body("URL không tồn tại");
+      }
+    }
+    catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }

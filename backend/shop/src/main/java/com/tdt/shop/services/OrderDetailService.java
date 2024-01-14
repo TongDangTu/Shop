@@ -10,6 +10,7 @@ import com.tdt.shop.repositories.OrderRepository;
 import com.tdt.shop.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class OrderDetailService implements IOrderDetailService {
   }
 
   @Override
+  @Transactional
   public OrderDetail createOrderDetail(OrderDetailDTO orderDetailDTO) throws DataNotFoundException {
     Order order = orderRepository.findById(orderDetailDTO.getOrderId())
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng có id: "+ orderDetailDTO.getOrderId()));
@@ -51,6 +53,7 @@ public class OrderDetailService implements IOrderDetailService {
   }
 
   @Override
+  @Transactional
   public OrderDetail updateOrderDetail(Long id, OrderDetailDTO orderDetailDTO) throws DataNotFoundException {
     Order existingOrder = orderRepository.findById(orderDetailDTO.getOrderId())
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy Đơn hàng có id: "+ orderDetailDTO.getOrderId()));
@@ -68,6 +71,7 @@ public class OrderDetailService implements IOrderDetailService {
   }
 
   @Override
+  @Transactional
   public void deleteOrderDetail(Long id) throws DataNotFoundException {
     getOrderDetail(id);
     orderDetailRepository.deleteById(id);

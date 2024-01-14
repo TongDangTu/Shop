@@ -7,6 +7,7 @@ import com.tdt.shop.models.Category;
 import com.tdt.shop.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class CategoryService implements ICategoryService {
   }
 
   @Override
+  @Transactional
   public Category createCategory(CategoryDTO categoryDTO) throws UniqueDataExistedException {
     existByName(categoryDTO.getName());
     Category category = Category.builder()
@@ -36,6 +38,7 @@ public class CategoryService implements ICategoryService {
   }
 
   @Override
+  @Transactional
   public Category updateCategory(long id, CategoryDTO categoryDTO) throws DataNotFoundException, UniqueDataExistedException {
     Category existingCategory = getCategoryById(id);
     existByName(categoryDTO.getName());
@@ -44,6 +47,7 @@ public class CategoryService implements ICategoryService {
   }
 
   @Override
+  @Transactional
   public void deleteCategory(long id) throws DataNotFoundException {
     // Xóa cứng
     getCategoryById(id);

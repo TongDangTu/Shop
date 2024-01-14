@@ -13,6 +13,7 @@ import com.tdt.shop.responses.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -43,6 +44,7 @@ public class OrderService implements IOrderService {
   }
 
   @Override
+  @Transactional
   public Order createOrder(OrderDTO orderDTO) throws InvalidParamException {
     // kiểm tra xem user_id có tồn tại hay không
     User user= userRepository.findById(orderDTO.getUserId())
@@ -82,6 +84,7 @@ public class OrderService implements IOrderService {
   }
 
   @Override
+  @Transactional
   public Order updateOrder(Long id, OrderDTO orderDTO) throws DataNotFoundException, InvalidParamException {
     Order existingOrder = orderRepository.findById(id)
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
@@ -116,6 +119,7 @@ public class OrderService implements IOrderService {
   }
 
   @Override
+  @Transactional
   public Order updateOrderForUser(Long id, OrderDTO orderDTO) throws DataNotFoundException, PermissionDenyException {
     Order existingOrder = orderRepository.findById(id)
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
@@ -138,6 +142,7 @@ public class OrderService implements IOrderService {
   }
 
   @Override
+  @Transactional
   public Order updateOrderForAdmin(Long id, OrderDTO orderDTO) throws DataNotFoundException, InvalidParamException {
     Order existingOrder = orderRepository.findById(id)
       .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng"));
@@ -162,6 +167,7 @@ public class OrderService implements IOrderService {
   }
 
   @Override
+  @Transactional
   public void deleteOrder(Long id) throws DataNotFoundException {
     Order order = getOrder(id);
     order.setActive(false);

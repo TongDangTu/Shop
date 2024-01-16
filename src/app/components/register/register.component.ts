@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { RegisterDTO } from '../../dtos/user/register.dto';
 
 @Component({
@@ -57,7 +57,7 @@ export class RegisterComponent {
       },
       error: (error: any) => {
         // Xử lý lỗi nếu có
-        alert(`Cannot register, error: ${error.error.message}`);
+        alert(`Lỗi đăng ký, error: ${error.error.message}`);
       } 
     });
   }

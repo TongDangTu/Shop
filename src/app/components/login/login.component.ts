@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { LoginDTO } from '../../dtos/user/login.dto';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
 import { LoginResponse } from '../../responses/user/login.response'
-import { TokenService } from '../../services/token.service';
-import { RoleService } from '../../services/role.service';
+import { TokenService } from '../../services/token/token.service';
+import { RoleService } from '../../services/role/role.service';
 import { Role } from '../../models/role';
 
 @Component({

@@ -37,12 +37,12 @@ import { DetailProductComponent } from './components/detail-product/detail-produ
     multi: true
   }],
   bootstrap: [
-    // HomeComponent,
+    HomeComponent,
     // DetailProductComponent
     // OrderComponent,
     // OrderConfirmComponent,
     // LoginComponent,
-    RegisterComponent,
+    // RegisterComponent,
   ]
 })
 export class AppModule { }

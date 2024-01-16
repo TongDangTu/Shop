@@ -1,13 +1,13 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { envipronment } from "../environments/environment";
+import { envipronment } from "../../environments/environment";
 import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleService {
-    private apiGetAll = `${envipronment.apiBaseUrl}/roles`;
+    private apiGetAll = `${envipronment.apiPrefix}/roles`;
     private apiConfig = {
         headers: this.createHeader()
     };

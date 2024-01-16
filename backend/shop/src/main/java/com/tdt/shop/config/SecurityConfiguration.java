@@ -6,17 +6,26 @@ import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableWebMvc
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
@@ -47,7 +56,7 @@ public class SecurityConfiguration {
             .hasAnyRole(Role.ADMIN)
 
             // Products
-            .requestMatchers(GET,apiPrefix+"/products")
+            .requestMatchers(GET,apiPrefix+"/products*")
             .permitAll()
 
             .requestMatchers(GET,apiPrefix+"/products/*")
@@ -123,8 +132,20 @@ public class SecurityConfiguration {
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
+//        http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
+//          @Override
+//          public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {
+//            CorsConfiguration configuration = new CorsConfiguration();
+//            configuration.setAllowedOrigins(List.of("*"));
+//            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//            configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+//            configuration.setExposedHeaders(List.of("x-auth-token"));
+//            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//            source.registerCorsConfiguration("/**", configuration);
+//            httpSecurityCorsConfigurer.configurationSource(source);
+//          }
+//        });
+//        return http.build();
         return http.build();
     }
-
-
 }

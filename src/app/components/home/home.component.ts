@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product/product.service';
 import { envipronment } from '../../environments/environment';
-import { TodoService } from '../../todo.service';
 import { TokenService } from '../../services/token/token.service';
+import { CategoryService } from '../../services/category/category.service';
+import { Category } from '../../models/category';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +17,16 @@ export class HomeComponent implements OnInit {
   
   currentPage: number = 1;
   itemsPage: number = 10;
+  search: string = '';
+  category_id: number = 0;
   pages: number[] = [];
   visiblePages: number[] = [];
 
-  constructor(private productService: ProductService, private todoService: TodoService, private tokenService: TokenService) {
+  categories: Category[] = [];
+  selectedCategory: string = '0';
+  
+
+  constructor(private productService: ProductService, private categoryService: CategoryService, private tokenService: TokenService) {
     // this.tokenService.removeToken();
     // this.tokenService.setToken('aaa');
     // console.log("Token: "+this.tokenService.getToken());
@@ -35,16 +42,16 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getProducts(this.currentPage, this.itemsPage);
+    this.getCategories();
+    this.getProducts(this.currentPage, this.itemsPage, this.search, this.category_id);
   }
 
-  getProducts (page:number, limit:number) {
-    page = page - 1;
-    this.productService.getProducts(page, limit).subscribe({
+  getProducts (page:number, limit:number, search: string, category_id:number) {
+    this.category_id = Number(this.selectedCategory);
+    this.productService.getProducts(page, limit, search, category_id).subscribe({
       next: (response: any) => {
         response.products.forEach((product:Product) => {
-          product.thumbnail = `${envipronment.apiPrefix}/products/images/${product.thumbnail}`;
-          // alert(product.thumbnail);
+          product.thumbnail = product.thumbnail ? `${envipronment.apiPrefix}/products/images/${product.thumbnail}` : '../../../assets/images/image-not-found-icon.png';
         });
 
         this.products = response.products;
@@ -63,7 +70,7 @@ export class HomeComponent implements OnInit {
 
   onPageChange (page: number) {
     this.currentPage = page;
-    this.getProducts(this.currentPage, this.itemsPage);
+    this.getProducts(this.currentPage, this.itemsPage, this.search, this.category_id);
   }
 
   generateVisiblePageArray (currentPage: number, totalPages: number): number[] {
@@ -78,5 +85,26 @@ export class HomeComponent implements OnInit {
     }
 
     return new Array(endPage - startPage + 1).fill(0).map((_, index) => startPage + index);
+  }
+
+  getCategories() {
+    this.categoryService.getCategories().subscribe({
+      next: (response: Category[]) => {
+        console.log(response);
+        this.categories = response;
+      },
+      complete: () => {
+
+      },
+      error: (error) => {
+        alert(error.error.message);
+      }
+    });
+  }
+
+  searchProducts () {
+    this.category_id = Number(this.selectedCategory);
+    this.getProducts(1, 10, this.search, this.category_id);
+    this.currentPage = 1;
   }
 }

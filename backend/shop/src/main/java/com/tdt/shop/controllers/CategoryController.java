@@ -22,8 +22,8 @@ public class CategoryController {
 
   @GetMapping("")
   public ResponseEntity<?> getAllCategories (
-    @RequestParam("page") int page,
-    @RequestParam("limit") int limit
+    @RequestParam(name = "page", defaultValue = "0") int page,
+    @RequestParam(name = "limit", defaultValue = "0") int limit
   ) {
     try {
       List<Category> categories = categoryService.getAllCategory();

@@ -11,13 +11,16 @@
 
     <div class="search-box">
         <!-- class "form-control" làm cho input đẹp hơn -->
-        <input type="text" name="" id="" class="form-control search-input" placeholder="Tìm sản phẩm">
-        <select name="" id="" class="form-control product-category">
-            <option value="" selected disabled>Danh mục sản phẩm</option>
-            <option value="">Đồ điện tử</option>
-            <option value="">Hải sản</option>
-            <option value="">Bánh kẹo</option>
+        <input type="text" name="" id="" class="form-control search-input" placeholder="Tìm sản phẩm"
+            [(ngModel)]="search">
+        <select name="" id="" class="form-control product-category"
+            [(ngModel)]="selectedCategory">
+            <option value="0" selected>Tất cả</option>
+            <ng-container *ngFor="let category of categories">
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            </ng-container>
         </select>
+        <button class="btn btn-primary ms-2" (click)="searchProducts()">Tìm kiếm</button>
     </div>
     <!-- class "row" là hàng -->
     <div class="row">
@@ -28,127 +31,64 @@
         <!-- class "col-lg-4" là mỗi item chiếm 4 cột, lg là kích thước màn hình cửa sổ lớn => hiển thị 3 sản phẩm -->
         <!-- class "col-md-6" là mỗi item chiếm 6 cột, md là kích thước màn hình cửa sổ bình thường => hiển thị 2 sản phẩm -->
         <!-- class "col-sm-12" là mỗi item chiếm 12 cột, sm là kích thước màn hình cửa sổ nhỏ => hiển thị 1 sản phẩm -->
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="produc-item">
-                <img
-                    src="https://images.pexels.com/photos/4050426/pexels-photo-4050426.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Product Image"
-                    class="produc-image">
-                <h3 class="product-name">Product 1</h3>
-                <p class="product-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque quos fugiat ut dolore impedit laboriosam beatae, harum labore quia magni, incidunt, illo sint dolorum? Quos esse reiciendis voluptates pariatur alias.</p>
-                <p class="product-warranty">Bảo hành: 12 tháng</p>
-                <p class="product-price">Giá: <del>200$</del> 100$</p>
-                <div class="product-rating">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-                    <span class="space-x"></span>
-                    <button class="btn btn-success">Mua ngay</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="produc-item">
-                <img
-                    src="https://images.pexels.com/photos/4050426/pexels-photo-4050426.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Product Image"
-                    class="produc-image">
-                <h3 class="product-name">Product 1</h3>
-                <p class="product-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque quos fugiat ut dolore impedit laboriosam beatae, harum labore quia magni, incidunt, illo sint dolorum? Quos esse reiciendis voluptates pariatur alias.</p>
-                <p class="product-warranty">Bảo hành: 12 tháng</p>
-                <p class="product-price">Giá: <del>200$</del> 100$</p>
-                <div class="product-rating">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-                    <span class="space-x"></span>
-                    <button class="btn btn-success">Mua ngay</button>
+        <ng-container *ngFor="let product of products">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="produc-item">
+                    <img
+                        src="{{ product.thumbnail }}"
+                        alt="Product Image"
+                        class="produc-image">
+                    <div class="product-image"></div>
+                    <h4 class="product-name">{{ product.name }}</h4>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-warranty">Bảo hành: 12 tháng</p>
+                    <p class="product-price">Giá: <del>200$</del> {{ product.price/1000000 }}$</p>
+                    <div class="product-rating">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+                        <span class="space-x"></span>
+                        <button class="btn btn-success">Mua ngay</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="produc-item">
-                <img
-                    src="https://images.pexels.com/photos/4050426/pexels-photo-4050426.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Product Image"
-                    class="produc-image">
-                <h3 class="product-name">Product 1</h3>
-                <p class="product-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque quos fugiat ut dolore impedit laboriosam beatae, harum labore quia magni, incidunt, illo sint dolorum? Quos esse reiciendis voluptates pariatur alias.</p>
-                <p class="product-warranty">Bảo hành: 12 tháng</p>
-                <p class="product-price">Giá: <del>200$</del> 100$</p>
-                <div class="product-rating">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-                    <span class="space-x"></span>
-                    <button class="btn btn-success">Mua ngay</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="produc-item">
-                <img
-                    src="https://images.pexels.com/photos/4050426/pexels-photo-4050426.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Product Image"
-                    class="produc-image">
-                <h3 class="product-name">Product 1</h3>
-                <p class="product-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque quos fugiat ut dolore impedit laboriosam beatae, harum labore quia magni, incidunt, illo sint dolorum? Quos esse reiciendis voluptates pariatur alias.</p>
-                <p class="product-warranty">Bảo hành: 12 tháng</p>
-                <p class="product-price">Giá: <del>200$</del> 100$</p>
-                <div class="product-rating">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-                    <span class="space-x"></span>
-                    <button class="btn btn-success">Mua ngay</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="produc-item">
-                <img
-                    src="https://images.pexels.com/photos/4050426/pexels-photo-4050426.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Product Image"
-                    class="produc-image">
-                <h3 class="product-name">Product 1</h3>
-                <p class="product-description">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque quos fugiat ut dolore impedit laboriosam beatae, harum labore quia magni, incidunt, illo sint dolorum? Quos esse reiciendis voluptates pariatur alias.</p>
-                <p class="product-warranty">Bảo hành: 12 tháng</p>
-                <p class="product-price">Giá: <del>200$</del> 100$</p>
-                <div class="product-rating">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-                    <span class="space-x"></span>
-                    <button class="btn btn-success">Mua ngay</button>
-                </div>
-            </div>
-        </div>
+        </ng-container>
     </div>
 </div>
-
+<div class="mt-5">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"
+            [class.disabled]="currentPage <= 1"
+            (click)="onPageChange(1)">
+            <a href="#" class="page-link">Start</a>
+        </li>
+        <li class="page-item"
+            [class.disabled]="currentPage <= 1"
+            (click)="onPageChange(currentPage-1)">
+            <a href="#" class="page-link">Previous</a>
+        </li>
+        <ng-container *ngFor="let page of visiblePages">
+            <li class="page-item"
+                [class.active]="page == currentPage"
+                (click)="onPageChange(page)">
+                <a href="#" class="page-link">{{ page }}</a>
+            </li>
+        </ng-container>
+        <li class="page-item"
+            [class.disabled]="currentPage >= totalPages"
+            (click)="onPageChange(currentPage + 1)">
+            <a href="#" class="page-link">Next</a>
+        </li>
+        <li class="page-item"
+            [class.disabled]="currentPage >= totalPages"
+            (click)="onPageChange(totalPages)">
+            <a href="#" class="page-link">End</a>
+        </li>
+    </ul>
+</div>
 <app-footer></app-footer>

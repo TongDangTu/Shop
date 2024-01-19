@@ -10,6 +10,8 @@ import com.tdt.shop.models.ProductImage;
 import com.tdt.shop.responses.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 public interface IProductService {
   Product createProduct (ProductDTO productDTO) throws DataNotFoundException, UniqueDataExistedException;
@@ -19,4 +21,5 @@ public interface IProductService {
   void deleteProduct (long id) throws DataNotFoundException;
   boolean existByName (String name) throws UniqueDataExistedException;
   ProductImage createProductImage (Long productId, ProductImageDTO productImageDTO) throws DataNotFoundException, InvalidParamException;
+  Page<ProductResponse> search (String search, Long categoryId, PageRequest pageRequest);
 }

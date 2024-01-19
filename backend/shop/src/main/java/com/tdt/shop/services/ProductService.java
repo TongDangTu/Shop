@@ -100,4 +100,12 @@ public class ProductService implements IProductService {
     }
     return productImageRepository.save(newProductImage);
   }
+
+  @Override
+  public Page<ProductResponse> search(String search, Long categoryId, PageRequest pageRequest) {
+    return productRepository.search(search, categoryId, pageRequest)
+      .map(product -> ProductResponse.fromProduct(product));
+  }
+
+
 }

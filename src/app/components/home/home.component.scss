@@ -38,6 +38,7 @@
     border-radius: 20px;
     padding: 20px;
     margin-bottom: 20px;
+    color: #f20;
 }
 
 .produc-image {
@@ -48,10 +49,15 @@
 
 .product-name {
     color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;;
+    min-height: 50px;
 }
 
 .product-description {
     color: rgb(173, 178, 203);
+    min-height: 50px;
 }
 
 .product-warranty {

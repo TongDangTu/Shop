@@ -17,14 +17,15 @@ export class ProductService {
 
   }
 
-  getProducts (page: number, limit: number): Observable<Product[]> {
+  getProducts (page: number, limit: number, search: string, category_id:number): Observable<Product[]> {
+    page = page - 1;
     // const params = new HttpParams()
     //   .set('page', page.toString())
     //   .set('limit', limit.toString());
     // return this.httpClient.get<Product[]>(`${this.productUrl}`, {params});
 
     // hoặc
-    const url = `?page=${page}&limit=${limit}`;
+    const url = `?page=${page}&limit=${limit}&search=${search}&category_id=${category_id}`;
     return this.httpClient.get<Product[]>(`${this.productUrl}${url}`);
   }
 }

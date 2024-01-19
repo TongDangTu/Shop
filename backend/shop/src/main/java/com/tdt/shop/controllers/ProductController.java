@@ -43,13 +43,15 @@ public class ProductController {
   private final IProductService productService;
   @GetMapping("")
   public ResponseEntity<ProductListResponse> getProducts (
-    @RequestParam("page") int page,
-    @RequestParam("limit") int limit
+    @RequestParam(name = "page", defaultValue = "0") int page,
+    @RequestParam(name = "limit", defaultValue = "10") int limit,
+    @RequestParam(name = "search", defaultValue = "") String search,
+    @RequestParam(name = "category_id", defaultValue = "0") Long categoryId
   ) {
     // Tạo Pageable
     PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("id").ascending());
-    Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
-
+//    Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
+    Page<ProductResponse> productPage = productService.search(search, categoryId, pageRequest);
     // Lấy tổng số trang
     int totalPages = productPage.getTotalPages();
     List<ProductResponse> products = productPage.getContent();
@@ -258,7 +260,7 @@ public class ProductController {
           .body(resource);
       }
       else {
-        return ResponseEntity.badRequest().body("URL không tồn tại");
+        return ResponseEntity.badRequest().body("URL ảnh không tồn tại");
       }
     }
     catch (Exception e) {

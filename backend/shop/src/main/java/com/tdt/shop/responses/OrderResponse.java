@@ -2,45 +2,65 @@ package com.tdt.shop.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tdt.shop.models.Order;
+import com.tdt.shop.models.OrderDetail;
+import com.tdt.shop.models.Product;
 import com.tdt.shop.models.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
   private Long id;
+
   @JsonProperty("user_id")
   private Long userId;
+
   @JsonProperty("fullname")
   private String fullName;
+
   private String email;
+
   @JsonProperty("phone_number")
   private String phoneNumber;
+
   private String address;
+
   private String note;
+
   @JsonProperty("order_date")
   private LocalDate orderDate;
+
   private String status;
+
   @JsonProperty("total_money")
   private Float totalMoney;
+
   @JsonProperty("shipping_method")
   private String shippingMethod;
+
   @JsonProperty("shipping_address")
   private String shippingAddress;
+
   @JsonProperty("shipping_date")
   private LocalDate shippingDate;
+
   @JsonProperty("tracking_number")
   private String trackingNumber;
+
   @JsonProperty("payment_method")
   private String paymentMethod;
+
   private Boolean active;
 
   public static OrderResponse fromOrder (Order order) {

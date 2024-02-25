@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { envipronment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Product } from '../../models/product';
+import { ProductImage } from '../../models/product-image';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,21 @@ export class ProductService {
     // hoặc
     const url = `?page=${page}&limit=${limit}&search=${search}&category_id=${category_id}`;
     return this.httpClient.get<Product[]>(`${this.productUrl}${url}`);
+  }
+
+  getProduct (id: number) : Observable<Product> {
+    return this.httpClient.get<Product>(`${this.productUrl}/${id}`);
+  }
+
+  getProductImagesByProductId (id: number): Observable<ProductImage[]> {
+    const url = `/${id}/images`;
+    return this.httpClient.get<ProductImage[]>(`${this.productUrl}${url}`);
+  }
+
+  getProductsByProductIds (ids: number[]): Observable<Product[]> {
+    const url = `/ids`;
+    console.log("${this.productUrl}${url}", `${this.productUrl}${url}`);
+    console.log("ids", ids);
+    return this.httpClient.post<Product[]>(`${this.productUrl}${url}`, ids, this.httpHeaders);
   }
 }

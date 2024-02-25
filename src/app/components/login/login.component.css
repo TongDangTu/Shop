@@ -1,39 +1,39 @@
 .container {
-  color: #fff;
+  color: #000;
   height: 100vh;
 }
 
 .login-form {
-  background-color: rgb(12, 12, 55);
+  background-color: #fef6f5;
   border-radius: 10px;
   padding: 20px;
   max-width: 1000px;
-  border: 1px solid rgb(32, 34, 60);
+  border: 1px solid #ee4d2d;
   align-items: center;
   justify-content: center;
 }
 
 .login-header {
   text-align: center;
-  color: rgb(105, 244, 181);
+  color: #ee4d2d;
   margin-bottom: 20px;
 }
 
 .form-control {
   background-color: transparent;
   border: none;
-  color: #fff;
+  color: #000;
 }
 
 .form-control:focus {
   background-color: transparent;
-  color: #fff;
+  color: #000;
   border-color: transparent;
   outline: none;
 }
 
 .divider-nospace {
-  border: 1px solid #fff;
+  border: 1px solid #ee4d2d;
 }
 
 .password-field {
@@ -41,16 +41,12 @@
 }
 
 .password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(50%);
-  color: rgb(105, 244, 181);
+  color: #ee4d2d;
   cursor: pointer;
 }
 
 .checkbox-text {
-  color: rgb(243, 165, 42);
+  color: #ee4d2d;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,7 +56,7 @@
 
 .checkbox-text input[type=checkbox]:checked {
   border-color: #fff;
-  background-color: rgb(233, 66, 178);
+  background-color: #ee4d2d;
 }
 
 .form-check-input {
@@ -68,7 +64,7 @@
 }
 
 .register-link {
-  color: rgb(105, 244, 181);
+  color: #ee4d2d;
   text-decoration: none;
 }
 
@@ -76,29 +72,29 @@
   margin-top: 20px;
   width: 200px;
   color: #fff;
-  border: 1px solid rgb(225, 64, 180);
+  border: 1px solid #ee4d2d;
 }
 
 .access-right:focus {
-  border: 1px solid rgb(225, 64, 180);
+  border: 1px solid #ee4d2d;
   background-color: rgb(32, 34, 60);
 }
 
 .form-control::-moz-placeholder {
-  color: rgba(243, 165, 43, 0.4);
+  color: #aaa;
   opacity: 1;
 }
 
 .form-control::placeholder {
-  color: rgba(243, 165, 43, 0.4);
+  color: #aaa;
   opacity: 1;
 }
 
 .login-button {
-  background: linear-gradient(to right, rgb(225, 64, 180), rgb(126, 43, 237));
+  background: #ee4d2d;
   color: #fff;
   border-radius: 30px;
-  width: 100%;
+  width: 50%;
   padding: 10px 0;
   margin-top: 20px;
   border: none;
@@ -106,6 +102,6 @@
 
 .divider {
   height: 1px;
-  background-color: rgb(243, 165, 42);
-  margin: 20px;
+  background-color: #ee4d2d;
+  margin: 50px;
 }/*# sourceMappingURL=login.component.css.map */

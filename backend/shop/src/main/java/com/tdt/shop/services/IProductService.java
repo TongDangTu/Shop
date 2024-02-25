@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface IProductService {
   Product createProduct (ProductDTO productDTO) throws DataNotFoundException, UniqueDataExistedException;
   Product getProductById (long id) throws DataNotFoundException;
@@ -22,4 +24,5 @@ public interface IProductService {
   boolean existByName (String name) throws UniqueDataExistedException;
   ProductImage createProductImage (Long productId, ProductImageDTO productImageDTO) throws DataNotFoundException, InvalidParamException;
   Page<ProductResponse> search (String search, Long categoryId, PageRequest pageRequest);
+  List<Product> getProductsByProductIds (List<Long> productIds);
 }

@@ -19,7 +19,6 @@ import java.util.List;
 public class OrderDetailController {
   private final OrderDetailService orderDetailService;
 
-  // Lấy các order details của 1 order
   @GetMapping("/order/{orderId}")
   public ResponseEntity<?> getOrderDetails (
     @Valid @PathVariable("orderId") Long orderId
@@ -79,6 +78,22 @@ public class OrderDetailController {
     try {
       orderDetailService.deleteOrderDetail(id);
       return ResponseEntity.ok("Xóa chi tiết đơn hàng thành công");
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @PostMapping("/list")
+  public ResponseEntity<?> createOrderDetails (
+    @RequestBody List<OrderDetailDTO> orderDetailDTOS
+  ) {
+    try {
+      List<OrderDetail> orderDetails = orderDetailService.createOrderDetails(orderDetailDTOS);
+      List<OrderDetailResponse> orderDetailResponses = orderDetails.stream()
+        .map(orderDetail -> OrderDetailResponse.fromOrderDetail(orderDetail))
+        .toList();
+      return ResponseEntity.ok(orderDetailResponses);
     }
     catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));

@@ -5,6 +5,8 @@ import { envipronment } from '../../environments/environment';
 import { TokenService } from '../../services/token/token.service';
 import { CategoryService } from '../../services/category/category.service';
 import { Category } from '../../models/category';
+import { Router } from '@angular/router';
+import { ProductDetailComponent } from '../product-detail/product-detail.component';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,7 @@ export class HomeComponent implements OnInit {
   totalPages: number = 0;
   
   currentPage: number = 1;
-  itemsPage: number = 10;
+  itemsPage: number = 20;
   search: string = '';
   category_id: number = 0;
   pages: number[] = [];
@@ -26,19 +28,7 @@ export class HomeComponent implements OnInit {
   selectedCategory: string = '0';
   
 
-  constructor(private productService: ProductService, private categoryService: CategoryService, private tokenService: TokenService) {
-    // this.tokenService.removeToken();
-    // this.tokenService.setToken('aaa');
-    // console.log("Token: "+this.tokenService.getToken());
-
-    // this.todoService.getData().subscribe(data => {
-    //   console.warn(data);
-    // });
-
-    // this.productService.getProducts(1, 10).subscribe(data => {
-    //   console.log(this.tokenService.getToken());
-    //   console.warn(data);
-    // });
+  constructor(private productService: ProductService, private categoryService: CategoryService, private router:Router) {
   }
 
   ngOnInit(): void {
@@ -57,7 +47,6 @@ export class HomeComponent implements OnInit {
         this.products = response.products;
         this.totalPages = response.totalPages;
         this.visiblePages = this.generateVisiblePageArray(this.currentPage, this.totalPages);
-        console.log(response);
       },
       complete: () => {
         
@@ -84,13 +73,12 @@ export class HomeComponent implements OnInit {
       startPage = Math.max(endPage - maxVisiblePages + 1, 1);
     }
 
-    return new Array(endPage - startPage + 1).fill(0).map((_, index) => startPage + index);
+    return new Array(endPage - startPage + 1).fill(0).map((valueAny, index) => startPage + index);
   }
 
   getCategories() {
     this.categoryService.getCategories().subscribe({
       next: (response: Category[]) => {
-        console.log(response);
         this.categories = response;
       },
       complete: () => {

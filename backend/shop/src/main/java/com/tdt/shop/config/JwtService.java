@@ -22,6 +22,7 @@ public class JwtService {
     }
 
     public <T> T extractClaim (String token, Function<Claims, T> claimsResolve) {
+
         final Claims claims = extractAllClaims(token);
         return claimsResolve.apply(claims);
     }
@@ -49,7 +50,7 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && (isTokenExpired(token) == false);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

@@ -1,0 +1,75 @@
+<app-header></app-header>
+
+<div class="container">
+    <div class="intro-section text-start">
+        <h1>Chi tiết đơn hàng</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="product-header">Thông tin người nhận</h2>
+            
+            <table class="table">
+                <tr>
+                    <td class="text-start">Họ và tên</td>
+                    <td class="text-end">{{ orderResponse.fullname }}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Email</td>
+                    <td class="text-end">{{ orderResponse.email }}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Số điện thoại</td>
+                    <td class="text-end">{{ orderResponse.phone_number }}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Địa chỉ</td>
+                    <td class="text-end">{{ orderResponse.address }}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Ghi chú</td>
+                    <td class="text-end">{{ orderResponse.note }}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Phương thức vận chuyển</td>
+                    <td class="text-end">{{ orderResponse.shipping_method }}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Phương thức thanh toán</td>
+                    <td class="text-end">{{ orderResponse.payment_method }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h2 class="product-order">Sản phẩm đã đặt hàng</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-start">Sản phẩm</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Đơn giá</th>
+                        <th scope="col">Tổng giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of orderDetailAndProductNameThumbnailResponses">
+                        <td class="text-start">
+                            <div class="product-info">
+                                <img src="{{ item.thumbnail }}"
+                                class="product-image" alt="Product Image">
+                                <span class="product-name">{{ item.name }}</span>
+                            </div>
+                        </td>
+                        <td class="text-start">{{ item.number_of_products }}</td>
+                        <td class="text-start">{{ item.price }} $</td>
+                        <td class="text-start">{{ item.total_money }}$</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-start mt-3">
+                <h4 class="header-text text-end total-price">Tổng: {{ orderResponse.total_money }} $</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,41 @@
+<app-header></app-header>
+
+<div class="container">
+    <div class="intro-section text-start">
+        <h1>Giỏ hàng</h1>
+    </div>
+    <div class="row">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="" id="" class="form-check-input"></th>
+                    <th scope="col" class="text-start">Sản phẩm</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Đơn giá</th>
+                    <th scope="col">Số tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let detailCart of detailCarts">
+                    <td><input type="checkbox" name="" id="" class="form-check-input"></td>
+                    <td>
+                        <div class="product-info">
+                            <img src="{{ detailCart.product.thumbnail }}"
+                            class="product-image" alt="Product Image">
+                            <span class="product-name">{{ detailCart.product.name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ detailCart.cart.quantity }}</td>
+                    <td>{{ detailCart.product.price }} $</td>
+                    <td>{{ detailCart.amount }} $</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-end mt-3">
+            <span class="total-price">Tổng: {{ totalPrice }} $</span>
+            <button class="btn btn-buy float-right ms-3" type="button" (click)="order()">Mua hàng</button>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

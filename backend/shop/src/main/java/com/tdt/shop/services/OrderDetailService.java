@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,7 +47,6 @@ public class OrderDetailService implements IOrderDetailService {
       .product(product)
       .price(orderDetailDTO.getPrice())
       .numberOfProducts(orderDetailDTO.getNumberOfProducts())
-      .color(orderDetailDTO.getColor())
       .totalMoney(orderDetailDTO.getTotalMoney())
       .build();
     return orderDetailRepository.save(orderDetail);
@@ -66,7 +66,6 @@ public class OrderDetailService implements IOrderDetailService {
     existingOrderDetail.setPrice(orderDetailDTO.getPrice());
     existingOrderDetail.setNumberOfProducts(orderDetailDTO.getNumberOfProducts());
     existingOrderDetail.setTotalMoney(orderDetailDTO.getTotalMoney());
-    existingOrderDetail.setColor(orderDetailDTO.getColor());
     return orderDetailRepository.save(existingOrderDetail);
   }
 
@@ -75,5 +74,26 @@ public class OrderDetailService implements IOrderDetailService {
   public void deleteOrderDetail(Long id) throws DataNotFoundException {
     getOrderDetail(id);
     orderDetailRepository.deleteById(id);
+  }
+
+  @Override
+  @Transactional
+  public List<OrderDetail> createOrderDetails (List<OrderDetailDTO> orderDetailDTOs) throws DataNotFoundException {
+    List<OrderDetail> orderDetails = new ArrayList<>();
+    for(OrderDetailDTO orderDetailDTO: orderDetailDTOs) {
+      Order order = orderRepository.findById(orderDetailDTO.getOrderId())
+        .orElseThrow(() -> new DataNotFoundException("Không tìm thấy đơn hàng có id: "+ orderDetailDTO.getOrderId()));
+      Product product = productRepository.findById(orderDetailDTO.getProductId())
+        .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm có id: "+ orderDetailDTO.getProductId()));
+      OrderDetail orderDetail = OrderDetail.builder()
+        .order(order)
+        .product(product)
+        .price(orderDetailDTO.getPrice())
+        .numberOfProducts(orderDetailDTO.getNumberOfProducts())
+        .totalMoney(orderDetailDTO.getTotalMoney())
+        .build();
+      orderDetails.add(orderDetail);
+    }
+    return orderDetailRepository.saveAll(orderDetails);
   }
 }

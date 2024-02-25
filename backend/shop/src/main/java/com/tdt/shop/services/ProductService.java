@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -107,5 +108,8 @@ public class ProductService implements IProductService {
       .map(product -> ProductResponse.fromProduct(product));
   }
 
-
+  @Override
+  public List<Product> getProductsByProductIds (List<Long> productIds) {
+    return productRepository.findByIdIn(productIds);
+  }
 }

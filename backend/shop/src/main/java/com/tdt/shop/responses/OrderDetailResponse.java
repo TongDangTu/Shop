@@ -6,9 +6,10 @@ import com.tdt.shop.models.OrderDetail;
 import com.tdt.shop.models.Product;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,9 +32,6 @@ public class OrderDetailResponse {
   @JsonProperty("total_money")
   private Float totalMoney;
 
-  @JsonProperty("color")
-  private String color;
-
   public static OrderDetailResponse fromOrderDetail (OrderDetail orderDetail) {
       return OrderDetailResponse.builder()
         .id(orderDetail.getId())
@@ -42,7 +40,6 @@ public class OrderDetailResponse {
         .price(orderDetail.getPrice())
         .numberOfProducts(orderDetail.getNumberOfProducts())
         .totalMoney(orderDetail.getTotalMoney())
-        .color(orderDetail.getColor())
         .build();
   }
 }

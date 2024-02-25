@@ -1,32 +1,29 @@
 <app-header></app-header>
 
-<div class="container">
+<div class="container mt-5">
     <form action=""
         #loginForm="ngForm">
         <div class="row">
-            <!-- class "offset-md-3" là căn lề có kích thước 3 cột -->
             <div class="col-md-6 offset-md-3">
-                <!-- class "mx-auto" là margin các chiều một cách tự động -->
                 <div class="login-form mx-auto">
                     <h2 class="login-header">Đăng nhập</h2>
                     <div class="form-group">
                         <label for="phone-number">Số điện thoại</label>
-                        <input type="text" name="phone-number" maxlength="10"
+                        <input type="text" name="phone-number" placeholder="Nhập số điện thoại" maxlength="10"
                             class="form-control" id="phone-number"
                             [(ngModel)]="phoneNumber"
-                            (input)="onPhoneNumberChange()"
                             (focus)="loginForm.form.controls['phone-number'].markAsTouched()">
                         <div class="divider-nospace"></div>
                         <p class="text-danger"
-                            *ngIf="phoneNumber.length < 9 && loginForm.form.controls['phone-number'].touched">
-                            Số điện thoại phải có ít nhất 9 ký tự
+                            *ngIf="phoneNumber.length < 9 && phoneNumber.length > 10 && loginForm.form.controls['phone-number'].touched">
+                            Số điện thoại phải có 9 đến 10 ký tự
                         </p>
                     </div>
                     <div class="mt-5"></div>
                     <div class="form-group password-field">
                         <label for="password">Mật khẩu</label>
                         <div class="input-group">
-                            <input type="password" placeholder="Ít nhất 3 ký tự" name="password"
+                            <input type="password" placeholder="Nhập mật khẩu" name="password"
                                 class="form-control" id="password"
                                 [(ngModel)]="password"
                                 (focus)="loginForm.form.controls['password'].markAsTouched()">
@@ -39,12 +36,11 @@
                         </p>
                     </div>
                     <div class="form-group">
-                        <!-- class "form-check" -->
                         <div class="form-check checkbox-text">
                             <span style="display: flex;">
-                                <!-- class "form-check-input" làm cho ô checkbox đẹp hơn -->
-                                <input type="checkbox" 
-                                    class="form-check-input" id="remember">
+                                <input type="checkbox" name="remember"
+                                    class="form-check-input" id="remember"
+                                    [(ngModel)]="isRemember">
                                 <label for="remember" class="form-check-label text-start">
                                     Ghi nhớ đăng nhập
                                 </label>
@@ -52,21 +48,16 @@
                             <a href="#" class="register-link">Quên mật khẩu</a>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <select name="selectedRole" id="" class="form-control access-right"
-                            [(ngModel)]="selectedRole">
-                            <option value="" selected disabled>Quyền đăng nhập</option>
-                            <option *ngFor="let role of roles" [ngValue]="role">{{ role.name }}</option>
-                        </select>
+                    <div class="d-flex justify-content-center">
+                        <button type="button"
+                            class="login-button"
+                            (click)="login()">
+                            Đăng nhập
+                        </button>
                     </div>
-                    <button type="button"
-                        class="login-button"
-                        (click)="login()">
-                        Đăng nhập
-                    </button>
                     <div class="divider"></div>
                     <p class="text-center">Bạn chưa đăng ký? <span>
-                        <a href="#" class="register-link">Tạo tài khoản</a></span>
+                        <a routerLink="/register" class="register-link">Tạo tài khoản</a></span>
                     </p>
                 </div>
             </div>

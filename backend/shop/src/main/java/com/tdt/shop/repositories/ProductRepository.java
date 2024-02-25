@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
   // exits...
   boolean existsByName (String name);
@@ -20,4 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     + "AND "
     + "(:category_id = 0 OR p.category.id = :category_id)")
   Page<Product> search(@Param("search") String search, @Param("category_id") Long categoryId, Pageable pageable);
+
+  List<Product> findByIdIn (List<Long> productIds);
 }

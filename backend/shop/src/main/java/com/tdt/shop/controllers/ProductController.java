@@ -8,9 +8,12 @@ import com.tdt.shop.exceptions.UniqueDataExistedException;
 import com.tdt.shop.models.Product;
 import com.tdt.shop.models.ProductImage;
 import com.tdt.shop.responses.MessageResponse;
+import com.tdt.shop.responses.ProductImageResponse;
 import com.tdt.shop.responses.ProductListResponse;
 import com.tdt.shop.responses.ProductResponse;
 import com.tdt.shop.services.IProductService;
+import com.tdt.shop.services.ProductImageService;
+import com.tdt.shop.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.UrlResource;
@@ -40,7 +43,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("${api.prefix}/products")
 public class ProductController {
-  private final IProductService productService;
+  private final ProductService productService;
+  private final ProductImageService productImageService;
   @GetMapping("")
   public ResponseEntity<ProductListResponse> getProducts (
     @RequestParam(name = "page", defaultValue = "0") int page,
@@ -72,8 +76,6 @@ public class ProductController {
       }
   }
 
-  // Để upload file, ta thêm consumes
-//  @PostMapping("")
   @PostMapping("")
   public ResponseEntity<?> createProduct (
     @RequestBody @Valid ProductDTO productDTO,
@@ -262,6 +264,37 @@ public class ProductController {
       else {
         return ResponseEntity.badRequest().body("URL ảnh không tồn tại");
       }
+    }
+    catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @GetMapping("/{id}/images")
+  public ResponseEntity<?> getProductImagesByProductId (
+    @PathVariable Long id
+  ) {
+    try {
+      List<ProductImage> productImages = productImageService.getProductImageByProductId(id);
+      List<ProductImageResponse> productImageResponses = productImages.stream()
+        .map(productImage -> ProductImageResponse.fromProductImage(productImage))
+        .toList();
+      return ResponseEntity.ok(productImageResponses);
+    } catch (DataNotFoundException e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @PostMapping("/ids")
+  public ResponseEntity<?> getProductsByIds (
+    @RequestBody() List<Long> ids
+  ) {
+    try {
+      List<Product> products = productService.getProductsByProductIds(ids);
+      List<ProductResponse> productResponses = products.stream()
+        .map(product -> ProductResponse.fromProduct(product))
+        .toList();
+      return ResponseEntity.ok(productResponses);
     }
     catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));

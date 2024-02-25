@@ -51,9 +51,9 @@ public class CategoryController {
     BindingResult result
   ) {
     if (result.hasErrors()) {
-      List<String> errorMessages = result.getFieldErrors()   // lấy danh sách lỗi
-        .stream()              // .stream() của java 8. Ở đây thì lấy 1 trường nào đó trong danh sách và ánh xạ sang mảng khác
-        .map(FieldError::getDefaultMessage)        // ánh xạ
+      List<String> errorMessages = result.getFieldErrors()
+        .stream()
+        .map(FieldError::getDefaultMessage)
         .toList();
       return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
     }

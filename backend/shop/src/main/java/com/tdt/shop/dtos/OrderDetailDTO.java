@@ -31,6 +31,4 @@ public class OrderDetailDTO {
   @Min(value = 1, message = "Total money must be ≥ 0")
   @JsonProperty("total_money")
   private Float totalMoney;
-
-  private String color;
 }

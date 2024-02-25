@@ -1,10 +1,15 @@
 package com.tdt.shop.controllers;
 
+import com.tdt.shop.dtos.UserChangePasswordDTO;
 import com.tdt.shop.dtos.UserDTO;
 import com.tdt.shop.dtos.UserLoginDTO;
+import com.tdt.shop.exceptions.InvalidParamException;
+import com.tdt.shop.models.User;
 import com.tdt.shop.responses.LoginResponse;
 import com.tdt.shop.responses.MessageResponse;
+import com.tdt.shop.responses.UserResponse;
 import com.tdt.shop.services.IUserService;
+import com.tdt.shop.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/users")
 public class UserController {
-  private final IUserService userService;
+  private final UserService userService;
   @PostMapping("/register")
   public ResponseEntity<?> createUser (
     @Valid @RequestBody UserDTO userDTO,
@@ -27,9 +32,9 @@ public class UserController {
   ) {
     try {
       if (result.hasErrors()) {
-        List<String> errorMessages = result.getFieldErrors()   // lấy danh sách lỗi
-          .stream()              // .stream() của java 8. Ở đây thì lấy 1 trường nào đó trong danh sách và ánh xạ sang mảng khác
-          .map(FieldError::getDefaultMessage)        // ánh xạ
+        List<String> errorMessages = result.getFieldErrors()
+          .stream()
+          .map(FieldError::getDefaultMessage)
           .toList();
         return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
       }
@@ -48,15 +53,61 @@ public class UserController {
     }
   }
 
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateUser (
+    @PathVariable Long id,
+    @RequestBody UserDTO userDTO,
+    @RequestHeader("Authorization") String authHeader
+  ) {
+    try {
+      String jwt = authHeader.substring(7);
+      User user = userService.getUserDetailsByJwt(jwt);
+      if (id != user.getId()) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+      }
+      user = userService.updateUser(id, userDTO);
+      return ResponseEntity.ok(UserResponse.fromUser(user));
+
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @PutMapping("/{id}/change_password")
+  public ResponseEntity<?> changePassword (
+    @PathVariable("id") Long id,
+    @RequestBody UserChangePasswordDTO userChangePasswordDTO,
+    @RequestHeader("Authorization") String authHeader
+  ) {
+    try {
+      String jwt = authHeader.substring(7);
+      User user = userService.getUserDetailsByJwt(jwt);
+      if (id != user.getId()) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+      }
+      String password = userChangePasswordDTO.getPassword();
+      String newPassword = userChangePasswordDTO.getNewPassword();
+      String retypePassword = userChangePasswordDTO.getRetypePassword();
+      if(!newPassword.equals(retypePassword)) {
+        return ResponseEntity.badRequest().body(new MessageResponse("Mật khẩu chưa khớp"));
+      }
+      user = userService.changePassword(id, password, newPassword);
+      return ResponseEntity.ok(UserResponse.fromUser(user));
+
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
   @PostMapping("/login")
   public ResponseEntity<?> login (
     @Valid @RequestBody UserLoginDTO userLoginDTO,
     BindingResult result
   ) {
     if (result.hasErrors()) {
-      List<String> errorMessages = result.getFieldErrors()   // lấy danh sách lỗi
-        .stream()              // .stream() của java 8. Ở đây thì lấy 1 trường nào đó trong danh sách và ánh xạ sang mảng khác
-        .map(FieldError::getDefaultMessage)        // ánh xạ
+      List<String> errorMessages = result.getFieldErrors()
+        .stream()
+        .map(FieldError::getDefaultMessage)
         .toList();
       return ResponseEntity.badRequest().body(new MessageResponse(errorMessages.toString()));
     }
@@ -70,6 +121,20 @@ public class UserController {
     // Trả về token trong response
       return ResponseEntity.ok(loginResponse);
     } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+  }
+
+  @PostMapping("/details")
+  public ResponseEntity<?> getUserDetails (
+    @RequestHeader("Authorization") String authHeader
+  ) {
+    try {
+      String jwt = authHeader.substring(7);
+      User user = userService.getUserDetailsByJwt(jwt);
+      return ResponseEntity.ok(UserResponse.fromUser(user));
+    }
+    catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }

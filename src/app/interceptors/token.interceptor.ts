@@ -22,15 +22,6 @@ export class TokenInterceptor implements HttpInterceptor {
                 })
             }
         }
-
-        // const token = this.tokenService.getToken();
-        //     if (token != null) {
-        //         req = req.clone({
-        //             setHeaders: {
-        //                 Authorization: `Bearer ${token}`,
-        //             },
-        //         })
-        //     }
         return next.handle(req);
     }
 }

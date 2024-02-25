@@ -1,27 +1,35 @@
 header {
-  background-color: rgba(0, 0, 0, 0);
-  color: rgb(173, 178, 203);
+  background-color: #ee4d2d;
+  color: #fff;
 }
 
 .navbar {
-  background-color: rgba(0, 0, 0, 0) !important;
+  background-color: #ee4d2d !important;
 }
 
 .navbar .container {
-  background-color: rgba(0, 0, 0, 0) !important;
+  background-color: #ee4d2d !important;
 }
 
 .navbar .container .navbar-brand {
-  color: rgb(173, 178, 203);
+  color: #eda500;
+}
+
+.navbar .logo {
+  width: 50px;
 }
 
 .navbar .container .navbar-nav .nav-link {
-  color: rgb(173, 178, 203);
+  color: #fff;
   border-radius: 18px;
   padding: 8px 16px;
 }
 
 .navbar .container .navbar-nav .nav-link.active {
-  background-color: rgb(127, 68, 255) !important;
-  color: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.nav-login {
+  float: right;
 }/*# sourceMappingURL=header.component.css.map */

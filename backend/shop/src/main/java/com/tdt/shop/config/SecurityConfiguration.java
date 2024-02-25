@@ -37,8 +37,20 @@ public class SecurityConfiguration {
             .disable()
             .authorizeHttpRequests()
 
-            .requestMatchers(apiPrefix+"/users/**")
+            // Users
+            .requestMatchers(apiPrefix+"/users/*")
             .permitAll()
+
+            .requestMatchers(PUT, apiPrefix+"/users/*")
+            .hasAnyRole(Role.USER, Role.ADMIN)
+
+            .requestMatchers(PUT, apiPrefix+"/users/*/change_password")
+            .hasAnyRole(Role.USER, Role.ADMIN)
+
+            .requestMatchers(POST, apiPrefix+"/users/details")
+            .hasAnyRole(Role.USER, Role.ADMIN)
+
+            // Roles
             .requestMatchers(apiPrefix+"/roles/**")
             .permitAll()
 
@@ -77,6 +89,12 @@ public class SecurityConfiguration {
             .requestMatchers(GET, apiPrefix+"/products/images/*")
             .permitAll()
 
+            .requestMatchers(GET, apiPrefix+"/products/*/images")
+            .permitAll()
+
+            .requestMatchers(POST, apiPrefix+"/products/ids")
+            .permitAll()
+
             // Orders
             .requestMatchers(GET, apiPrefix+"/orders/user/*")
             .hasAnyRole(Role.USER, Role.ADMIN)
@@ -93,6 +111,9 @@ public class SecurityConfiguration {
             .requestMatchers(DELETE, apiPrefix+"/orders/*")
             .hasAnyRole(Role.USER)
 
+            .requestMatchers(GET, apiPrefix+"/orders/*/order_details/products_thumbnail")
+            .hasAnyRole(Role.USER, Role.ADMIN)
+
             // OrderDetails
             .requestMatchers(GET, apiPrefix+"/order_details/order/*")
             .hasAnyRole(Role.USER, Role.ADMIN)
@@ -107,6 +128,9 @@ public class SecurityConfiguration {
             .hasAnyRole(Role.USER)
 
             .requestMatchers(DELETE, apiPrefix+"/order_details/*")
+            .hasAnyRole(Role.USER)
+
+            .requestMatchers(POST, apiPrefix+"/order_details/list")
             .hasAnyRole(Role.USER)
 
 

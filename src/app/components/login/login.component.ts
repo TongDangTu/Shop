@@ -7,6 +7,7 @@ import { LoginResponse } from '../../responses/user/login.response'
 import { TokenService } from '../../services/token/token.service';
 import { RoleService } from '../../services/role/role.service';
 import { Role } from '../../models/role';
+import { UserResponse } from '../../responses/user/user.response';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +20,20 @@ export class LoginComponent {
   phoneNumber: string;
   password: string;
   roles: Role[] = [];
-  rememberMe: boolean = true;
+  isRemember: boolean = true;
   selectedRole: Role | undefined;
+
+  userResponse: UserResponse = {
+    id: 0,
+    address: '',
+    fullname: '',
+    phone_number: '',
+    is_active: false,
+    date_of_birth: 0,
+    facebook_account_id: 0,
+    goole_account_id: 0,
+    role_name: "",
+  };
 
   constructor (
     private router:Router,
@@ -28,12 +41,8 @@ export class LoginComponent {
     private tokenService: TokenService,
     private roleService: RoleService
   ) {
-    this.phoneNumber="33445566";
-    this.password="123456";
-  }
-
-  onPhoneNumberChange () {
-    console.log(`Phone:${this.phoneNumber}`);
+    this.phoneNumber="";
+    this.password="";
   }
 
   // @Override
@@ -65,13 +74,14 @@ export class LoginComponent {
 
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
-        alert(response.message);
         const token = response.token;
+        if (this.isRemember) {
+        }
         this.tokenService.setToken(token);
-        // this.router.navigate(['']);
+        this.getUserDetails();
       },
       complete: () => {
-        debugger;
+        
       },
       error: (error: any) => {
         alert(`${error.error.message}`);
@@ -79,4 +89,25 @@ export class LoginComponent {
     });
   }
 
+  getUserDetails () {
+    this.userService.getUserDetails().subscribe({
+      next: (response: UserResponse) => {
+        this.userResponse = response;
+        this.userResponse.date_of_birth = new Date(this.userResponse.date_of_birth);
+        this.userService.setUser(this.userResponse);
+        this.userService.setId(this.userResponse.id);
+      },
+      complete: () => {
+        if (this.userService.getUser().role_name == "admin") {
+          this.router.navigateByUrl('/dashboard_admin');
+        }
+        else {
+          this.router.navigateByUrl('/');
+        }
+      },
+      error: (error: any) => {
+        alert(`${error.error.message}`);
+      }
+    });
+  }
 }

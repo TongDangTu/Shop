@@ -1,0 +1,96 @@
+<app-header></app-header>
+
+<div class="container">
+    <div class="intro-section text-start">
+        <h1>Chi tiết sản phẩm</h1>
+        <p></p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExample" attr.data-bs-slide-to='{{ i }}' aria-current="true" aria-label="Slide 1"
+                        class="{{ i == currentCarouselIndex ? 'active' : '' }}"
+                        *ngFor="let productImage of productImages; let i = index"
+                        (click)="activeCarouselItem(i)"
+                        >
+                    </button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item {{ i == currentCarouselIndex ? 'active' : '' }}"
+                        *ngFor="let productImage of productImages; let i = index">
+                        <div class="square-image">
+                            <img src="{{ productImage.image_url }}"
+                                class="product-image"
+                                alt="Product Image">
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                    data-bs-slide="prev"
+                    (click)="previousCarousel()">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                    data-bs-slide="next"
+                    (click)="nextCarousel()">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="thumbnail-container">
+                    <div class="thumbnail-item {{ i == currentCarouselIndex ? 'active' : '' }}"
+                        *ngFor="let productImage of productImages; let i = index"
+                        (click)="thumbnailItemClick(i)">
+                        <div class="square-image">
+                            <img src="{{ productImage.image_url }}"
+                                class="thumbnail-image"
+                                alt="Thumbnail Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="product-details">
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description }}</p>
+                <p>Giá: {{ product.price }}$</p>
+                <div class="product-quantity">
+                    <div class="border-wrapper">
+                        <button (click)="decrease()">-</button>
+                        <input type="text" value="1" name="quantity" id=""
+                            [(ngModel)]="quantity">
+                        <button (click)="increase()">+</button>
+                    </div>
+                </div>
+                <div class="product-actions">
+                    <button class="btn add-cart" (click)="addToCart()">Thêm vào giỏ hàng</button>
+                    <button class="btn buy-now">Mua ngay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#carouselExample').on('slide.bs.carousel', function onSlide (ev) {
+        var id = ev.relatedTarget.id;
+        console.log(ev);
+        switch (id) {
+            case "1":
+            window.alert(1);
+            break;
+            case "2":
+            window.alert(2);
+            break;
+            case "3":
+            window.alert(3);
+            break;
+        }
+    });
+</script>
+
+<app-footer></app-footer>

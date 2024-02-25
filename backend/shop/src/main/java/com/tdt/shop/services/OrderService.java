@@ -173,4 +173,9 @@ public class OrderService implements IOrderService {
     order.setActive(false);
     orderRepository.save(order);
   }
+
+  @Override
+  public List<Object[]> getOrderAndOrderDetailListResponseByOrderId (Long orderId) {
+    return orderRepository.getOrderAndOrderDetailListResponseByOrderId(orderId);
+  }
 }

@@ -1,6 +1,6 @@
 .intro-section {
   text-align: center;
-  color: #fff;
+  color: #ee4d2d;
   padding: 20px;
 }
 
@@ -13,19 +13,25 @@
 
 .product-category {
   width: 200px;
+  border: 1px solid #ee4d2d;
 }
 
 .search-input {
   width: 300px;
-  background-color: rgb(19, 23, 42);
+  background-color: #fff;
   margin-right: 10px;
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: #ee4d2d;
+  color: #000;
+}
+
+.btn.search {
+  background-color: #ee4d2d;
   color: #fff;
 }
 
 .form-control {
-  background-color: rgb(35, 26, 73);
-  color: #fff;
+  background-color: #fff;
+  color: #000;
 }
 
 .form-control::-moz-placeholder {
@@ -37,11 +43,12 @@
 }
 
 .produc-item {
-  background-color: rgb(19, 23, 42);
-  border: 1px solid rgb(35, 39, 61);
+  background-color: #fef6f5;
+  border: 1px solid #ee4d2d;
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 20px;
+  color: #f20;
 }
 
 .produc-image {
@@ -51,19 +58,28 @@
 }
 
 .product-name {
-  color: #fff;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 52px;
 }
 
 .product-description {
   color: rgb(173, 178, 203);
+  min-height: 76px;
+  max-height: 76px;
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-warranty {
-  color: rgb(242, 126, 212);
+  color: #ee2c4a;
 }
 
 .product-price {
-  color: #fff;
+  color: #ee4d2d;
 }
 
 .product-rating {
@@ -77,6 +93,23 @@
   margin-top: 20px;
 }
 
+.add-cart {
+  background-color: rgba(255, 87, 34, 0.1);
+  border: 1px solid #ee4d2d;
+  color: #ee4d2d;
+}
+
+.buy-now {
+  background-color: #ee4d2d;
+  color: #fff;
+}
+
 .space-x {
   margin: 0 5px;
+}
+
+.page-item .page-link {
+  background-color: #fef6f5;
+  color: #ee4d2d;
+  border-color: #ee4d2d;
 }/*# sourceMappingURL=home.component.css.map */

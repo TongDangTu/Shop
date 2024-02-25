@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { RegisterDTO } from '../../dtos/user/register.dto';
+import { LoginResponse } from '../../responses/user/login.response';
 
 @Component({
   selector: 'app-register',
@@ -33,33 +34,36 @@ export class RegisterComponent {
   }
 
   register () {
-    const registerDTO:RegisterDTO = new RegisterDTO ({
-      "fullname" : this.fullName,
-      "phone_number" : this.phoneNumber,
-      "address" : this.address,
-      "password" : this.password,
-      "retype_password" : this.retypePassword,
-      "date_of_birth" : this.dateOfBirth,
-      "facebook_account_id" : 0,
-      "google_account_id" : 0,
-      "role_id" : 1
-    });
-  
-    this.userService.register(registerDTO).subscribe({
-      next: (response: any) => {
-        debugger;
-        // Xử lý kết quả trả về khi đăng ký thành công
-        alert("Đăng ký thành công");
-        this.router.navigate(['/login']);
-      },
-      complete: () => {
-        debugger;
-      },
-      error: (error: any) => {
-        // Xử lý lỗi nếu có
-        alert(`Lỗi đăng ký, error: ${error.error.message}`);
-      } 
-    });
+    if (this.isAccepted == true) {
+      const registerDTO:RegisterDTO = new RegisterDTO ({
+        "fullname" : this.fullName,
+        "phone_number" : this.phoneNumber,
+        "address" : this.address,
+        "password" : this.password,
+        "retype_password" : this.retypePassword,
+        "date_of_birth" : this.dateOfBirth,
+        "facebook_account_id" : 0,
+        "google_account_id" : 0,
+        "role_id" : 1
+      });
+    
+      this.userService.register(registerDTO).subscribe({
+        next: (response: LoginResponse) => {
+          // Xử lý kết quả trả về khi đăng ký thành công
+          alert("Đăng ký thành công");
+        },
+        complete: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (error: any) => {
+          // Xử lý lỗi nếu có
+          alert(`Lỗi đăng ký, error: ${error.error.message}`);
+        } 
+      });
+    }
+    else {
+      alert("Bạn chưa đồng ý với các điều khoản của chúng tôi");
+    }
   }
 
   // 

@@ -1,48 +1,38 @@
 <app-header></app-header>
 
-<!-- class "container" là 1 khung chuẩn, nội dung ở giữa, chừa khoảng trắng 2 bên -->
-<!-- class "container-fluid" có nội dung rộng hơn -->
 <div class="container">
-    <div class="intro-section">
-        <h1>Đây là trang home</h1>
-        <p>Trang này hiển thị danh sách các sản phẩm, kèm ảnh</p>
-        <p>Các bạn có thể chọn xem sản phẩm và mua hàng tại đây</p>
+    <div class="intro-section text-start">
+        <h1>Trang chủ</h1>
     </div>
 
-    <div class="search-box">
-        <!-- class "form-control" làm cho input đẹp hơn -->
-        <input type="text" name="" id="" class="form-control search-input" placeholder="Tìm sản phẩm"
-            [(ngModel)]="search">
-        <select name="" id="" class="form-control product-category"
-            [(ngModel)]="selectedCategory">
-            <option value="0" selected>Tất cả</option>
-            <ng-container *ngFor="let category of categories">
-                <option value="{{ category.id }}">{{ category.name }}</option>
-            </ng-container>
-        </select>
-        <button class="btn btn-primary ms-2" (click)="searchProducts()">Tìm kiếm</button>
-    </div>
-    <!-- class "row" là hàng -->
     <div class="row">
-        <!-- nếu màn hình cửa sổ lớn, thì class "col-lg-" sẽ hoạt động -->
-        <!-- nếu màn hình cửa sổ bình thường, thì class "col-md-" sẽ hoạt động -->
-        <!-- nếu màn hình cửa sổ bình thường, thì class "col-sm-" sẽ hoạt động -->
-        <!-- cửa sổ sẽ được chia ra 12 cột -->
-        <!-- class "col-lg-4" là mỗi item chiếm 4 cột, lg là kích thước màn hình cửa sổ lớn => hiển thị 3 sản phẩm -->
-        <!-- class "col-md-6" là mỗi item chiếm 6 cột, md là kích thước màn hình cửa sổ bình thường => hiển thị 2 sản phẩm -->
-        <!-- class "col-sm-12" là mỗi item chiếm 12 cột, sm là kích thước màn hình cửa sổ nhỏ => hiển thị 1 sản phẩm -->
+        <div class="search-box col-12">
+            <input type="text" name="" id="" class="form-control search-input w-75" placeholder="Tìm sản phẩm"
+                [(ngModel)]="search">
+            <select name="" id="" class="form-control product-category"
+                [(ngModel)]="selectedCategory">
+                <option value="0" selected>Tất cả</option>
+                <ng-container *ngFor="let category of categories">
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                </ng-container>
+            </select>
+            <button class="btn ms-2 search" (click)="searchProducts()">Tìm kiếm</button>
+        </div>
+    </div>
+    <div class="row">
         <ng-container *ngFor="let product of products">
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-4 col-sm-12">
                 <div class="produc-item">
-                    <img
+                    <img alt="Product Image" class="produc-image"
                         src="{{ product.thumbnail }}"
-                        alt="Product Image"
-                        class="produc-image">
-                    <div class="product-image"></div>
-                    <h4 class="product-name">{{ product.name }}</h4>
+                        routerLink="/product_details/{{ product.id }}">
+                    <h4 class="product-name" routerLink="/product_details/{{ product.id }}">{{ product.name }}</h4>
                     <p class="product-description">{{ product.description }}</p>
                     <p class="product-warranty">Bảo hành: 12 tháng</p>
-                    <p class="product-price">Giá: <del>200$</del> {{ product.price/1000000 }}$</p>
+                    <p class="product-price">
+                        Giá: 
+                        <!-- <del>200$</del> -->
+                         {{ product.price }}$</p>
                     <div class="product-rating">
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
@@ -51,9 +41,9 @@
                         <i class="fa-solid fa-star-half-stroke"></i>
                     </div>
                     <div class="product-actions">
-                        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+                        <button class="btn add-cart">Thêm vào giỏ hàng</button>
                         <span class="space-x"></span>
-                        <button class="btn btn-success">Mua ngay</button>
+                        <button class="btn buy-now">Mua ngay</button>
                     </div>
                 </div>
             </div>
@@ -65,29 +55,29 @@
         <li class="page-item"
             [class.disabled]="currentPage <= 1"
             (click)="onPageChange(1)">
-            <a href="#" class="page-link">Start</a>
+            <a href="#" class="page-link mx-1 rounded"><i class="fa-solid fa-backward-step"></i></a>
         </li>
         <li class="page-item"
             [class.disabled]="currentPage <= 1"
             (click)="onPageChange(currentPage-1)">
-            <a href="#" class="page-link">Previous</a>
+            <a href="#" class="page-link mx-1 rounded"><i class="fa-solid fa-caret-left"></i></a>
         </li>
         <ng-container *ngFor="let page of visiblePages">
             <li class="page-item"
                 [class.active]="page == currentPage"
                 (click)="onPageChange(page)">
-                <a href="#" class="page-link">{{ page }}</a>
+                <a href="#" class="page-link mx-1 rounded">{{ page }}</a>
             </li>
         </ng-container>
         <li class="page-item"
             [class.disabled]="currentPage >= totalPages"
             (click)="onPageChange(currentPage + 1)">
-            <a href="#" class="page-link">Next</a>
+            <a href="#" class="page-link mx-1 rounded"><i class="fa-solid fa-caret-right"></i></a>
         </li>
         <li class="page-item"
             [class.disabled]="currentPage >= totalPages"
             (click)="onPageChange(totalPages)">
-            <a href="#" class="page-link">End</a>
+            <a href="#" class="page-link mx-1 rounded"><i class="fa-solid fa-forward-step"></i></a>
         </li>
     </ul>
 </div>
